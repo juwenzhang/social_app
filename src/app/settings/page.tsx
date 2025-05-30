@@ -1,18 +1,20 @@
 import React from 'react';
-interface HomePageProps{
+
+interface SettingsPageProps{
   children?: React.ReactNode;
 }
 
-const HomePage: React.FC<HomePageProps> = (props: HomePageProps) => {
+const SettingsPage:React.FC<SettingsPageProps>
+= (props: SettingsPageProps) => {
   const {children} = props;
   return(
     <React.Fragment>
       <h1>
-        HomePage
+        SettingsPage
       </h1>
       {children}
     </React.Fragment>
   );
 }
 
-export default HomePage;
+export default SettingsPage;

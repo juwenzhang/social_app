@@ -1,18 +1,20 @@
 import React from 'react';
-interface HomePageProps{
+
+interface ProfilePageProps{
   children?: React.ReactNode;
 }
 
-const HomePage: React.FC<HomePageProps> = (props: HomePageProps) => {
+const ProfilePage:React.FC<ProfilePageProps> 
+= (props: ProfilePageProps) => {
   const {children} = props;
   return(
     <React.Fragment>
       <h1>
-        HomePage
+        ProfilePage
       </h1>
       {children}
     </React.Fragment>
   );
 }
 
-export default HomePage;
+export default ProfilePage;

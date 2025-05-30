@@ -1,0 +1,11 @@
+const WEBSITE_TITLE = 'JUWENZHANG'
+
+const WEBSITE_LIGHT_THEME = {
+  WEBSITE_NAVBAR_COLOR: 'text-blue-500',
+  WEBSITE_MENU_COLOR: 'bg-blue-500',
+}
+
+export { 
+  WEBSITE_TITLE, 
+  WEBSITE_LIGHT_THEME 
+}
