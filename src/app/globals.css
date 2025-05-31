@@ -6,4 +6,65 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  max-width: 100vw;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+  -moz-scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.font-show {
+  white-space: pre-wrap;
+  word-break: break-word;
+  word-wrap: break-word;
+  vertical-align: middle;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, #ff0000, #00ff00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.custom-main-bg {
+  background-image: url('/images/default.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 自定义滚动条宽度 */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* 自定义滚动条轨道 */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+/* 自定义滚动条滑块 */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+/* 鼠标悬停时滑块样式 */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

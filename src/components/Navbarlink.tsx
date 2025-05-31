@@ -22,11 +22,11 @@ const Navbarlink:React.FC<NavbarlinkProps>
     children, 
     href, 
     className, 
-    imageWidth = 16, 
-    imageHeight = 16, 
+    imageWidth = 20, 
+    imageHeight = 20, 
     imageSrc, 
     imageAlt = "Image", 
-    textColor = "text-blue-700", 
+    textColor = "gradient-text", 
     content = "Content"
   } = props;
 

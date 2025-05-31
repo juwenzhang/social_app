@@ -5,13 +5,13 @@ import { ColorType } from "./types/colorType";
 function useColor(colorType: 'dark' | 'light' | void) {
   switch (colorType) {
     case ColorType.dark: {
-      return projectSetDarkColor;
+      return projectSetLightColor;
     }
     case ColorType.light: {
-      return projectSetLightColor;
+      return projectSetDarkColor;
     }
     default: {
-      return projectSetLightColor;
+      return projectSetDarkColor;
     }
   }
 }

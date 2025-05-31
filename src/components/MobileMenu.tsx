@@ -1,10 +1,11 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
 import { WEBSITE_LIGHT_THEME } from "@/constants/globals";
 import menuData from "./configs/MenuData";
 import useColor from "@/utils/setColor";
+import { usePathname } from "next/navigation";
 
 interface MobileMenuProps {
   children?: React.ReactNode;
@@ -14,11 +15,17 @@ const MobileMenu: React.FC<MobileMenuProps>
 = (props: MobileMenuProps) => {
   const { children } = props;
   const colorFunc = useColor();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    setIsOpen(false);
+    // document.body.style.overflow = "hidden";
+  }, [pathname]);
 
   return (
     <React.Fragment>
@@ -52,10 +59,14 @@ const MobileMenu: React.FC<MobileMenuProps>
         {isOpen && (
           <>
             <div className="
-              absolute left-0 top-24 w-full h-[calc(100vh-96px)] bg-white
+              absolute left-0 top-24 w-full h-[calc(100vh-96px)] 
+              bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-90 
               flex flex-col gap-[16px] items-center justify-center font-semibold
-              text-xl z-10
-            ">
+              text-xl z-10"
+              onScroll={(e) => {
+                e.preventDefault();
+              }}
+            >
               {menuData.map((item) => (
                 <Link key={item.id} href={item.link}>
                   <div style={

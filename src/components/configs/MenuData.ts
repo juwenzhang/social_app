@@ -27,8 +27,13 @@ const menuData: MenuItemType[] = [
   { 
     id: 5, 
     title: "Login", 
-    link: "/login", 
+    link: "/sign-in", 
   },
+  {
+    id: 6,
+    title: "Register",
+    link: "/sign-up",
+  }
 ];
 
 export default menuData;
