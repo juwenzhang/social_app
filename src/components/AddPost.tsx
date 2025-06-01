@@ -11,7 +11,7 @@ const AddPost: React.FC<AddPostProps>
 
   return (
     <React.Fragment>
-      <div className="p-4 bg-white rounded-lg flex
+      <div className="p-4 bg-white/50 rounded-lg flex
         gap-6 justify-between shadow-md text-sm
       ">
         {/* avatar part */}
@@ -46,7 +46,7 @@ const AddPost: React.FC<AddPostProps>
               className="
                 w-full bg-transparent p-2 rounded-lg flex-1
                 outline-none placeholder:text-sm
-                placeholder:text-gray-400 resize-none scrollbar-hide
+                placeholder:text-gray-400 scrollbar-hide
                 focus:border-blue-500 focus:ring focus:ring-blue-200 
                 focus:ring-opacity-50 focus:ring-offset-2 focus:ring-offset-white
                 focus:bg-gray

@@ -12,7 +12,7 @@ const Feed: React.FC<FeedProps>
   return (
     <React.Fragment>
       <div className="
-        p-4 bg-white shadow-md rounded-lg flex
+        p-4 bg-white/50 shadow-md rounded-lg flex
         flex-col gap-12 mb-4
       ">
         <Post />

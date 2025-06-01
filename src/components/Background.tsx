@@ -20,7 +20,7 @@ const Background: React.FC = () => {
   const starsRef = useRef<Star[]>([]); 
   const numStars = 1000;
 
-  // 更新函数
+  // update function
   const updateStarPositions = (stars: Star[]) => {
     stars.forEach((star) => {
       star.x += star.speedX;
@@ -33,7 +33,7 @@ const Background: React.FC = () => {
         star.speedY = -star.speedY;
       }
 
-      // 过渡效果
+      // transition of the size of the stars
       if (star.isHovered && star.radius < star.targetRadius) {
         star.radius += 0.1;
       } else if (!star.isHovered && star.radius > star.targetRadius) {

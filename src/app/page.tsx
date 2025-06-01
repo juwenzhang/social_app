@@ -25,7 +25,9 @@ const HomePage: React.FC<HomePageProps> = (props: HomePageProps) => {
           </div>
         </div>
         <div className='hidden lg:block w-[30%]'>
-          <RightMenu />
+          <RightMenu 
+            userId='1234567890'
+          />
         </div>
         {children}
       </div>

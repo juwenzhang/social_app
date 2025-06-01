@@ -14,7 +14,7 @@ const Stories: React.FC<StoriesProps>
   return(
     <React.Fragment>
       <div 
-        className='p-4 bg-white rounded-lg shadow-md 
+        className='p-4 bg-white/50 rounded-lg shadow-md 
           overflow-scroll text-sm scrollbar-hide text-xs'
       >
         <div className='flex gap-8'>
