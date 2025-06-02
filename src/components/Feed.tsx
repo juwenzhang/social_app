@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import Post from "@/components/Post";
 
 interface FeedProps {
@@ -8,6 +9,7 @@ interface FeedProps {
 const Feed: React.FC<FeedProps> 
 = (props: FeedProps) => {
   const { children } = props;
+  const arr = Array.from({length: 10}).fill(0)
 
   return (
     <React.Fragment>

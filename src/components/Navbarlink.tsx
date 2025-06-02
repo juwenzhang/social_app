@@ -45,6 +45,7 @@ const Navbarlink:React.FC<NavbarlinkProps>
           height={imageHeight} 
           src={imageSrc} 
           alt={imageAlt}
+          loading='lazy'
         />
         <span>{content || ""}</span>
         {children}

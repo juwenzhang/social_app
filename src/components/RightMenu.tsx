@@ -20,7 +20,7 @@ const RightMenu: React.FC<RightMenuProps>
       <div className='flex flex-col gap-4 rounded-md'>
         <FriendRequest />
         <Birthday />
-        <Ad />
+        <Ad size='md' />
         {children}
       </div>
     </React.Fragment>

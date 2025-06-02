@@ -13,7 +13,21 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-  }
+  },
+  // 开启 swc 压缩
+  swcMinify: true,
+  // 支持 web worker
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.module.rules.push({
+        test: /\.worker\.ts$/,
+        use: { loader: 'worker-loader' },
+        exclude: /node_modules/,
+      });
+      config.output.globalObject = 'self';
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

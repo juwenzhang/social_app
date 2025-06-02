@@ -1,293 +1,365 @@
-class ImageProcessor {
-  public file: File;
-  private canvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  private image: HTMLImageElement;
+type WatermarkPosition = 
+  | 'top-left' 
+  | 'top-right' 
+  | 'bottom-left' 
+  | 'bottom-right';
+type ImageFormat = 
+  | 'jpeg' 
+  | 'png' 
+  | 'webp' 
+  | 'bmp';
 
-  constructor(file: File) {
-    this.file = file;
-    this.canvas = document.createElement('canvas');
-    this.context = this.canvas.getContext('2d')!;
-    this.image = new Image();
+class ImageProcessor {
+  private canvas: OffscreenCanvas | HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
+  private image!: HTMLImageElement | ImageBitmap;
+  private width!: number;
+  private height!: number;
+
+  constructor(private file: File | Blob) {
+    if (typeof OffscreenCanvas !== 'undefined') {
+      this.canvas = new OffscreenCanvas(1, 1);
+    } else {
+      this.canvas = document.createElement('canvas');
+    }
+    
+    const ctx = this.canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Failed to get 2D context for canvas');
+    }
+    this.context = ctx as CanvasRenderingContext2D;
   }
 
-  private loadImage(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.image.onload = () => {
-        resolve();
-      };
-      this.image.onerror = (error) => {
-        reject(error);
-      };
-      this.image.src = URL.createObjectURL(this.file);
-    });
+  static async fromUrl(url: string): Promise<ImageProcessor> {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+    return new ImageProcessor(blob);
+  }
+
+  private async loadImage(): Promise<void> {
+    if (typeof ImageBitmap !== 'undefined') {
+      this.image = await createImageBitmap(this.file);
+      this.width = this.image.width;
+      this.height = this.image.height;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.context.drawImage(this.image, 0, 0);
+    } else {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          this.image = img;
+          this.width = img.width;
+          this.height = img.height;
+          this.canvas.width = this.width;
+          this.canvas.height = this.height;
+          this.context.drawImage(img, 0, 0);
+          resolve();
+        };
+        img.onerror = (
+          message, source, lineno, colno, error
+        ) => {
+          const errorMessage = error 
+            ? error.message 
+            : message 
+              ? `Failed to load image: ${message}` 
+              : 'Failed to load image: Unknown error';
+          reject(new Error(errorMessage));
+        };
+        img.src = URL.createObjectURL(this.file);
+      });
+    }
   }
 
   async compress(options: {
     maxWidth: number;
     maxHeight: number;
     quality: number;
-    format: string;
-  }): Promise<File> {
+    format: ImageFormat;
+  }): Promise<Blob> {
     await this.loadImage();
+    
     const { maxWidth, maxHeight, quality, format } = options;
-    const { width, height } = this.image;
-    let newWidth = width;
-    let newHeight = height;
-    const scale = Math.min(maxWidth / width, maxHeight / height);
-    newWidth *= scale;
-    newHeight *= scale;
-
-    this.canvas.width = newWidth;
-    this.canvas.height = newHeight;
-    this.context.drawImage(this.image, 0, 0, newWidth, newHeight);
-
-    const dataUrl = this.canvas.toDataURL(`image/${format}`, quality);
-    const blob = await (await fetch(dataUrl)).blob();
-    return new File(
-      [blob], 
-      this.file.name, 
-      { type: `image/${format}` }
-    );
-  }
-
-  async addImageWatermark(
-    watermarkImage: File,
-    position: 
-      'top-left' 
-      | 'top-right' 
-      | 'bottom-left' 
-      | 'bottom-right' 
-      = 'bottom-right',
-    opacity: number = 0.5
-  ): Promise<File> {
-    await this.loadImage();
-    const watermark = new Image();
-    watermark.src = URL.createObjectURL(watermarkImage);
-    await new Promise((resolve, reject) => {
-      watermark.onload = () => {
-        resolve(null);
-      };
-      watermark.onerror = (error) => {
-        reject(error);
-      };
-    });
-
-    this.canvas.width = this.image.width;
-    this.canvas.height = this.image.height;
-    this.context.drawImage(this.image, 0, 0);
-    this.context.globalAlpha = opacity;
-
-    let x = 0;
-    let y = 0;
-    switch (position) {
-      case 'top-left':
-        x = 10;
-        y = 10;
-        break;
-      case 'top-right':
-        x = this.canvas.width - watermark.width - 10;
-        y = 10;
-        break;
-      case 'bottom-left':
-        x = 10;
-        y = this.canvas.height - watermark.height - 10;
-        break;
-      case 'bottom-right':
-        x = this.canvas.width - watermark.width - 10;
-        y = this.canvas.height - watermark.height - 10;
-        break;
+    let newWidth = this.width;
+    let newHeight = this.height;
+    
+    if (newWidth > maxWidth) {
+      newHeight = (newHeight * maxWidth) / newWidth;
+      newWidth = maxWidth;
     }
-
-    this.context.drawImage(watermark, x, y);
-    this.context.globalAlpha = 1;
-
-    const dataUrl = this.canvas.toDataURL(this.file.type);
-    const blob = await (await fetch(dataUrl)).blob();
-    return new File(
-      [blob], 
-      this.file.name, 
-      { type: this.file.type }
-    );
-  }
-
-  async convertToGrayscale(): Promise<File> {
-    await this.loadImage();
-    this.canvas.width = this.image.width;
-    this.canvas.height = this.image.height;
-    this.context.drawImage(this.image, 0, 0);
-
-    const imageData = this.context.getImageData(
-      0, 
-      0, 
-      this.canvas.width, 
-      this.canvas.height
-    );
-    const data = imageData.data;
-
-    for (let i = 0; i < data.length; i += 4) {
-      const avg = 
-        0.299 * data[i] 
-        + 0.587 * data[i + 1] 
-        + 0.114 * data[i + 2];
-      data[i] = avg;     // R
-      data[i + 1] = avg; // G
-      data[i + 2] = avg; // B
+    
+    if (newHeight > maxHeight) {
+      newWidth = (newWidth * maxHeight) / newHeight;
+      newHeight = maxHeight;
     }
-
-    this.context.putImageData(imageData, 0, 0);
-
-    const dataUrl = this.canvas.toDataURL(this.file.type);
-    const blob = await (await fetch(dataUrl)).blob();
-    return new File(
-      [blob], 
-      this.file.name, 
-      { type: this.file.type }
+    
+    const tempCanvas = typeof OffscreenCanvas !== 'undefined'
+      ? new OffscreenCanvas(newWidth, newHeight)
+      : document.createElement('canvas');
+      
+    const tempCtx = tempCanvas.getContext('2d');
+    if (!tempCtx) {
+      throw new Error('Failed to get 2D context for temporary canvas');
+    }
+    
+    tempCanvas.width = newWidth;
+    tempCanvas.height = newHeight;
+    
+    (tempCtx as any).drawImage(
+      this.image as HTMLImageElement | ImageBitmap,
+      0, 0, this.width, this.height,
+      0, 0, newWidth, newHeight
     );
+    
+    if (typeof OffscreenCanvas !== 'undefined') {
+      return (tempCanvas as any).convertToBlob({
+        type: `image/${format}`,
+        quality: quality
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        (tempCanvas as any).toBlob(
+          (blob: any) => {
+            if (!blob) {
+              reject(new Error('Failed to create blob from canvas'));
+              return;
+            }
+            resolve(blob);
+          },
+          `image/${format}`,
+          quality
+        );
+      });
+    }
   }
 
   async addTextWatermark(
     text: string,
-    font: string,
-    color: string,
-    position: 
-      'top-left' 
-      | 'top-right' 
-      | 'bottom-left' 
-      | 'bottom-right',
-    opacity: number = 0.5
-  ): Promise<File> {
+    font: string = '24px Arial',
+    color: string = 'rgba(255, 255, 255, 0.5)',
+    position: WatermarkPosition = 'bottom-right',
+    opacity: number = 1
+  ): Promise<Blob> {
     await this.loadImage();
-    this.canvas.width = this.image.width;
-    this.canvas.height = this.image.height;
-    this.context.drawImage(this.image, 0, 0);
-    this.context.globalAlpha = opacity;
+    
     this.context.font = font;
     this.context.fillStyle = color;
-
+    this.context.globalAlpha = opacity;
+    
     const textMetrics = this.context.measureText(text);
-    let x = 0;
-    let y = 0;
+    const textWidth = textMetrics.width;
+    const textHeight = parseInt(font, 10) || 24;
+    
+    let x = 10;
+    let y = 10;
+    
     switch (position) {
-      case 'top-left':
-        x = 10;
-        y = 30;
-        break;
       case 'top-right':
-        x = this.canvas.width - textMetrics.width - 10;
-        y = 30;
+        x = this.width - textWidth - 10;
         break;
       case 'bottom-left':
-        x = 10;
-        y = this.canvas.height - 10;
+        y = this.height - 10;
         break;
       case 'bottom-right':
-        x = this.canvas.width - textMetrics.width - 10;
-        y = this.canvas.height - 10;
+        x = this.width - textWidth - 10;
+        y = this.height - 10;
         break;
     }
-
-    this.context.fillText(text, x, y);
-    this.context.globalAlpha = 1;
-
-    const dataUrl = this.canvas.toDataURL(this.file.type);
-    const blob = await (await fetch(dataUrl)).blob();
-    return new File(
-      [blob], 
-      this.file.name, 
-      { type: this.file.type }
-    );
+    
+    this.context.fillText(text, x, y + textHeight / 2);
+    
+    return this.exportImage();
   }
 
-  async rotate(angle: number): Promise<File> {
+  async addImageWatermark(
+    watermarkImage: File | Blob | string,
+    position: WatermarkPosition = 'bottom-right',
+    scale: number = 0.2,
+    opacity: number = 0.7
+  ): Promise<Blob> {
     await this.loadImage();
-    const radians = (angle * Math.PI) / 180;
-    const cos = Math.cos(radians);
-    const sin = Math.sin(radians);
-    const newWidth = Math.abs(
-      this.image.width * cos) 
-      + Math.abs(this.image.height * sin  
-    );
-    const newHeight = Math.abs(
-      this.image.width * sin) 
-      + Math.abs(this.image.height * cos
-    );
-
-    this.canvas.width = newWidth;
-    this.canvas.height = newHeight;
-    this.context.translate(newWidth / 2, newHeight / 2);
-    this.context.rotate(radians);
-    this.context.drawImage(
-      this.image, 
-      -this.image.width / 2, 
-      -this.image.height / 2
-    );
-
-    const dataUrl = this.canvas.toDataURL(this.file.type);
-    const blob = await (await fetch(dataUrl)).blob();
-    return new File(
-      [blob], 
-      this.file.name, 
-      { type: this.file.type }
-    );
-  }
-
-  async flip(direction: 'horizontal' | 'vertical'): Promise<File> {
-    await this.loadImage();
-    this.canvas.width = this.image.width;
-    this.canvas.height = this.image.height;
-
-    this.context.save();
-    if (direction === 'horizontal') {
-      this.context.scale(-1, 1);
-      this.context.drawImage(this.image, -this.image.width, 0);
+    
+    let watermark: HTMLImageElement | ImageBitmap;
+    
+    if (typeof watermarkImage === 'string') {
+      const response = await fetch(watermarkImage);
+      const blob = await response.blob();
+      
+      if (typeof ImageBitmap !== 'undefined') {
+        watermark = await createImageBitmap(blob);
+      } else {
+        watermark = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = URL.createObjectURL(blob);
+        });
+      }
     } else {
-      this.context.scale(1, -1);
-      this.context.drawImage(this.image, 0, -this.image.height);
+      if (typeof ImageBitmap !== 'undefined') {
+        watermark = await createImageBitmap(watermarkImage);
+      } else {
+        watermark = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = URL.createObjectURL(watermarkImage);
+        });
+      }
     }
-    this.context.restore();
-
-    const dataUrl = this.canvas.toDataURL(this.file.type);
-    const blob = await (await fetch(dataUrl)).blob();
-    return new File(
-      [blob], 
-      this.file.name, 
-      { type: this.file.type }
+    
+    const watermarkWidth = watermark.width * scale;
+    const watermarkHeight = watermark.height * scale;
+    
+    let x = 10;
+    let y = 10;
+    
+    switch (position) {
+      case 'top-right':
+        x = this.width - watermarkWidth - 10;
+        break;
+      case 'bottom-left':
+        y = this.height - watermarkHeight - 10;
+        break;
+      case 'bottom-right':
+        x = this.width - watermarkWidth - 10;
+        y = this.height - watermarkHeight - 10;
+        break;
+    }
+    
+    this.context.globalAlpha = opacity;
+    this.context.drawImage(
+      watermark as HTMLImageElement | ImageBitmap,
+      x, y,
+      watermarkWidth, watermarkHeight
     );
+    this.context.globalAlpha = 1;
+    
+    return this.exportImage();
   }
 
   async crop(
-    x: number, 
-    y: number, 
-    width: number, 
+    x: number,
+    y: number,
+    width: number,
     height: number
-  ): Promise<File> {
+  ): Promise<Blob> {
     await this.loadImage();
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.context.drawImage(
-      this.image, x, y, width, 
-      height, 0, 0, width, height
+    
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    if (x + width > this.width) width = this.width - x;
+    if (y + height > this.height) height = this.height - y;
+    
+    const tempCanvas = typeof OffscreenCanvas !== 'undefined'
+      ? new OffscreenCanvas(width, height)
+      : document.createElement('canvas');
+      
+    const tempCtx = tempCanvas.getContext('2d');
+    if (!tempCtx) {
+      throw new Error('Failed to get 2D context for cropping canvas');
+    }
+    
+    tempCanvas.width = width;
+    tempCanvas.height = height;
+    
+    (tempCtx as any).drawImage(
+      this.image as HTMLImageElement | ImageBitmap,
+      x, y, width, height,
+      0, 0, width, height
     );
-
-    const dataUrl = this.canvas.toDataURL(this.file.type);
-    const blob = await (await fetch(dataUrl)).blob();
-    return new File(
-      [blob], 
-      this.file.name, 
-      { type: this.file.type }
-    );
+    
+    if (typeof OffscreenCanvas !== 'undefined') {
+      return (tempCanvas as any).convertToBlob({
+        type: 'image/webp',
+        quality: 0.8
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        (tempCanvas as any).toBlob(
+          (blob: any) => {
+            if (!blob) {
+              reject(new Error('Failed to create blob from canvas'));
+              return;
+            }
+            resolve(blob);
+          },
+          'image/webp',
+          0.8
+        );
+      });
+    }
   }
 
-  static async fromUrl(url: string): Promise<ImageProcessor> {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const file = new File(
-      [blob], 
-      'image', 
-      { type: blob.type }
-    );
-    return new ImageProcessor(file);
+  async adjustBrightness(factor: number): Promise<Blob> {
+    await this.loadImage();
+    
+    const imageData = this.context.getImageData(0, 0, this.width, this.height);
+    const data = imageData.data;
+    
+    for (let i = 0; i < data.length; i += 4) {
+      data[i] = Math.min(255, Math.max(0, data[i] + factor));
+      data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + factor));
+      data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + factor));
+    }
+    
+    this.context.putImageData(imageData, 0, 0);
+    
+    return this.exportImage();
+  }
+
+  async adjustContrast(factor: number): Promise<Blob> {
+    await this.loadImage();
+    
+    const imageData = this.context.getImageData(0, 0, this.width, this.height);
+    const data = imageData.data;
+    
+    const contrast = (factor + 100) / 100;
+    const contrastSquared = contrast * contrast;
+    
+    for (let i = 0; i < data.length; i += 4) {
+      let r = data[i] - 128;
+      let g = data[i + 1] - 128;
+      let b = data[i + 2] - 128;
+      
+      r = r * contrastSquared;
+      g = g * contrastSquared;
+      b = b * contrastSquared;
+      
+      data[i] = Math.min(255, Math.max(0, r + 128));
+      data[i + 1] = Math.min(255, Math.max(0, g + 128));
+      data[i + 2] = Math.min(255, Math.max(0, b + 128));
+    }
+    
+    this.context.putImageData(imageData, 0, 0);
+    
+    return this.exportImage();
+  }
+
+  private exportImage(): Promise<Blob> {
+    if (typeof OffscreenCanvas !== 'undefined') {
+      return (this.canvas as any).convertToBlob({
+        type: 'image/webp',
+        quality: 0.8
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        (this.canvas as any).toBlob(
+          (blob: any) => {
+            if (!blob) {
+              reject(new Error('Failed to create blob from canvas'));
+              return;
+            }
+            resolve(blob);
+          },
+          'image/webp',
+          0.8
+        );
+      });
+    }
   }
 }
 

@@ -24,6 +24,7 @@ const AddPost: React.FC<AddPostProps>
             width={80} 
             height={80} 
             alt="avatar" 
+            loading="lazy"
             className="object-cover"
           />
         </div>
@@ -59,6 +60,7 @@ const AddPost: React.FC<AddPostProps>
               width={24} 
               height={24} 
               alt="emoji"
+              loading="lazy"
               className="cursor-pointer object-contain"
             />
           </div>
@@ -78,6 +80,7 @@ const AddPost: React.FC<AddPostProps>
                 width={24} 
                 height={24} 
                 alt="emoji"
+                loading="lazy"
                 className="cursor-pointer object-contain"
               />
               AddPhoto~😘
@@ -91,6 +94,7 @@ const AddPost: React.FC<AddPostProps>
                 width={24} 
                 height={24} 
                 alt="emoji"
+                loading="lazy"
                 className="cursor-pointer object-contain"
               />
               AddVideo~😉
@@ -104,6 +108,7 @@ const AddPost: React.FC<AddPostProps>
                 width={24} 
                 height={24} 
                 alt="emoji"
+                loading="lazy"
                 className="cursor-pointer object-contain"
               />
               AddEvent~🚀
@@ -117,6 +122,7 @@ const AddPost: React.FC<AddPostProps>
                 width={24} 
                 height={24} 
                 alt="emoji"
+                loading="lazy"
                 className="cursor-pointer object-contain"
               />
               AddPoll~😪

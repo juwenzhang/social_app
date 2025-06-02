@@ -45,8 +45,7 @@ const Navbar:React.FC<NavbarProps>
           scroll:scrollbar-thumb-gray-400 
           shadow-md shadow-gray-200`,
           isScrolled ? 
-          `fixed top-0 z-50 h-20 bg-gradient-to-r 
-          from-pink-200/70 via-purple-200/70 to-blue-200/70` : '',
+          `fixed top-0 z-50 h-20` : '',
           'transition-all duration-300 ease-in'
         )}>
         <div 
@@ -92,6 +91,7 @@ const Navbar:React.FC<NavbarProps>
                   height={20} 
                   src="/images/search.png" 
                   alt="Search"
+                  loading='lazy'
                   onClick={() => {
                     console.log("search")
                   }}

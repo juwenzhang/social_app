@@ -35,6 +35,7 @@ const PostUser: React.FC<PostUserProps>
             width={width}
             height={height}
             title={title}
+            loading='lazy'
             className='rounded-full object-cover'
           />
           <span className='font-semibold gradient-text flex-start'>{username}</span>
@@ -44,6 +45,7 @@ const PostUser: React.FC<PostUserProps>
           alt='More'
           width={16}
           height={16}
+          loading='lazy'
           className='w-6 h-6'
         />
       </div>

@@ -19,13 +19,16 @@ const PcMenu: React.FC<PcMenuProps> = (props: PcMenuProps) => {
         <div className="flex flex-row items-center justify-center gap-5">
           <SignedIn>
             <div className="cursor-pointer">
-              <Image src='/images/people.png' alt='' width={25} height={25} />
+              <Image src='/images/people.png' loading="lazy" 
+                alt='' width={25} height={25} />
             </div>
             <div className="cursor-pointer">
-              <Image src='/images/messages.png' alt='' width={25} height={25} />
+              <Image src='/images/messages.png' loading="lazy" 
+                alt='' width={25} height={25} />
             </div>
             <div className="cursor-pointer">
-              <Image src='/images/notifications.png' alt='' width={25} height={25} />
+              <Image src='/images/notifications.png' loading="lazy" 
+                alt='' width={25} height={25} />
             </div>
             <UserButton />
           </SignedIn>

@@ -1,5 +1,10 @@
 "use client";
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { 
+  useRef, 
+  useLayoutEffect, 
+  useState, 
+  useEffect 
+} from 'react';
 import useColor from '@/utils/setColor';
 
 interface Star {
@@ -13,12 +18,29 @@ interface Star {
   targetRadius: number;
 }
 
+const gradients = [
+  'bg-gradient-to-br from-green-300 via-pink-300 to-yellow-300',
+  'bg-gradient-to-tl from-yellow-500 via-orange-500 to-red-500',
+  'bg-gradient-to-tr from-orange-600 via-yellow-600 to-brown-600',
+  'bg-gradient-to-bl from-blue-300 via-sky-300 to-white'
+];
+
 const Background: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const color = useColor('light'); 
   const starsRef = useRef<Star[]>([]); 
   const numStars = 1000;
+  const [currentGradientIndex, setCurrentGradientIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentGradientIndex(
+        (prevIndex) => (prevIndex + 1) 
+        % gradients.length);
+    }, 10000); 
+    return () => clearInterval(interval);
+  }, []);
 
   // update function
   const updateStarPositions = (stars: Star[]) => {
@@ -112,7 +134,9 @@ const Background: React.FC = () => {
         const newIsHovered = distance < star.targetRadius * 2;
         if (newIsHovered !== star.isHovered) {
           star.isHovered = newIsHovered;
-          star.targetRadius = newIsHovered ? star.targetRadius * 2 : star.targetRadius / 2;
+          star.targetRadius = newIsHovered 
+            ? star.targetRadius * 2 
+            : star.targetRadius / 2;
         }
       });
     };
@@ -140,8 +164,12 @@ const Background: React.FC = () => {
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('click', handleMouseClick);
 
+    let resizeTimeout: ReturnType<typeof setTimeout>;
     const handleResize = () => {
-      updateCanvasSize();
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        updateCanvasSize();
+      }, 300);
     };
 
     window.addEventListener('resize', handleResize);
@@ -150,6 +178,9 @@ const Background: React.FC = () => {
       window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('click', handleMouseClick);
+      if (resizeTimeout) {
+        clearTimeout(resizeTimeout);  
+      }
     };
   }, []);
 
@@ -161,8 +192,8 @@ const Background: React.FC = () => {
         height: '100vh', 
         zIndex: -1,
       }}
-      className='bg-gradient-to-r from-blue-500 
-        via-purple-500 to-pink-500'
+      className={`${gradients[currentGradientIndex]} 
+        transition-colors duration-3000`}
     >
       <canvas
         ref={canvasRef}

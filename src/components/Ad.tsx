@@ -2,19 +2,19 @@ import React from 'react';
 
 interface AdProps{
   children?: React.ReactNode;
-  size?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const Ad: React.FC<AdProps>
 = (props: AdProps) => {
   const {
     children,
-    size = 'sm'
+    size = 'md'
   } = props;
   return(
     <React.Fragment>
-      <div className='p-2 rounded-md bg-white/50 shadow-md'>
-        hello world
+      <div className='p-2 rounded-md bg-white/50 
+        shadow-md text-sm'>
         {children}
       </div>
     </React.Fragment>

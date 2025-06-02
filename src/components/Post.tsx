@@ -1,3 +1,4 @@
+'use client';
 import React from "react";;
 import PostUser from "@/components/PostUser";
 import PostDesc from "@/components/PostDesc";
@@ -14,7 +15,9 @@ const Post: React.FC<PostProps>
   const { children } = props;
   return (
     <React.Fragment>
-      <div className="flex flex-col gap-4 shadow-md p-4 rounded-lg">
+      <div 
+        className="flex flex-col gap-4 shadow-md p-4 rounded-lg"
+      >
         {/* user part */}
         <PostUser />
 

@@ -18,6 +18,7 @@ const Comments: React.FC<CommentProps>
             alt='Image Do Not Load'
             width={32}
             height={32}
+            loading='lazy'
             className='rounded-full object-cover ring-2 ring-gray-300'
           />
           <div className='flex-1 flex items-center justify-center gap-2'>
@@ -44,6 +45,7 @@ const Comments: React.FC<CommentProps>
               alt='Image Do Not Load'
               width={24}
               height={24}
+              loading='lazy'
               className='cursor-pointer hover:opacity-75 transition-opacity'
             />
           </div>
@@ -57,6 +59,7 @@ const Comments: React.FC<CommentProps>
             alt='Image Do Not Load'
             width={32}
             height={32}
+            loading='lazy'
             className='w-8 h-8 rounded-full object-cover ring-2 ring-gray-300'
           />
 
@@ -80,6 +83,7 @@ const Comments: React.FC<CommentProps>
                   alt='Image Do Not Load'
                   width={16}
                   height={16}
+                  loading='lazy'
                   className='object-contain 
                     hover:opacity-75 transition-opacity'
                 />
@@ -91,6 +95,7 @@ const Comments: React.FC<CommentProps>
                   alt='Image Do Not Load'
                   width={16}
                   height={16}
+                  loading='lazy'
                   className='object-contain 
                     hover:opacity-75 transition-opacity'
                 />
@@ -105,6 +110,7 @@ const Comments: React.FC<CommentProps>
             alt='Image Do Not Load'
             width={16}
             height={16}
+            loading='lazy'
             className='cursor-pointer object-contain 
               hover:opacity-75 transition-opacity'
           />

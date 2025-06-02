@@ -38,6 +38,7 @@ const PostInterItem: React.FC<PostInterItemProps>
             width={width}
             height={height}
             title={title}
+            loading="lazy"
             className="cursor-pointer"
           />
           <span className="text-gray-300">|</span>

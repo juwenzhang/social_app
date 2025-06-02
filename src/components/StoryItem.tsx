@@ -40,6 +40,7 @@ const StoryItem: React.FC<StoryItemProps>
             alt={alt}  
             width={width}
             height={height}
+            loading='lazy'
             className='object-cover'
           />
         </div>
