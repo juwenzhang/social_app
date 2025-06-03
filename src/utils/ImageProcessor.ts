@@ -164,8 +164,8 @@ class ImageProcessor {
         y = this.height - 10;
         break;
       case 'bottom-right':
-        x = this.width - textWidth - 10;
-        y = this.height - 10;
+        x = this.width - textWidth - 50;
+        y = this.height - 50;
         break;
     }
     

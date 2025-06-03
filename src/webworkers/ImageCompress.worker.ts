@@ -18,7 +18,7 @@ interface WorkerErrorResponse {
 // const processedImages = new Map<string, Blob>();
 
 self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
-  const { src, watermarkText } = event.data;
+  const { src } = event.data;
 
   try {
     const processor = await ImageProcessor.fromUrl(src);
@@ -28,16 +28,9 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
       quality: 0.8,
       format: 'webp'
     });
-    const compressedProcessor = new ImageProcessor(compressedData);
-    const watermarkedData = await compressedProcessor.addTextWatermark(
-      watermarkText,
-      '24px Arial',
-      'rgba(255, 255, 255, 0.5)',
-      'bottom-right'
-    );
 
-    // processedImages.set(src, watermarkedData);
-    self.postMessage({ data: watermarkedData } as WorkerSuccessResponse);
+    // processedImages.set(src, compressedData);
+    self.postMessage({ data: compressedData } as WorkerSuccessResponse);
   } catch (err) {
     console.error('[Worker] 处理失败:', err);
     let errorMessage = '未知错误';

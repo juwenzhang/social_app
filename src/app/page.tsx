@@ -6,11 +6,10 @@ import AddPost from '@/components/AddPost';
 import Feed from '@/components/Feed';
 
 interface HomePageProps{
-  children?: React.ReactNode;
+  // children?: React.ReactNode;
 }
 
-const HomePage: React.FC<HomePageProps> = (props: HomePageProps) => {
-  const {children} = props;
+const HomePage: React.FC<HomePageProps> = () => {
   return(
     <React.Fragment>
       <div className='flex gap-6 pt-6'>
@@ -25,11 +24,8 @@ const HomePage: React.FC<HomePageProps> = (props: HomePageProps) => {
           </div>
         </div>
         <div className='hidden lg:block w-[30%]'>
-          <RightMenu 
-            userId='1234567890'
-          />
+          <RightMenu />
         </div>
-        {children}
       </div>
     </React.Fragment>
   );

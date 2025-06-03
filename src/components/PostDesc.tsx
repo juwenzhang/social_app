@@ -80,7 +80,7 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
         URL.revokeObjectURL(watermarkedSrc);
       }
     };
-  }, [src, watermarkText]);
+  }, []);
 
   if (error) {
     return <div>加载图片时出错: {error.message}</div>;

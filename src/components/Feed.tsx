@@ -4,11 +4,15 @@ import Post from "@/components/Post";
 
 interface FeedProps {
   children?: React.ReactNode;
+  userId?: string;
 }
 
 const Feed: React.FC<FeedProps> 
 = (props: FeedProps) => {
-  const { children } = props;
+  const { 
+    children,
+    userId 
+  } = props;
   const arr = Array.from({length: 10}).fill(0)
 
   return (

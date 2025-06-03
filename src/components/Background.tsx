@@ -30,8 +30,9 @@ const Background: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const color = useColor('light'); 
   const starsRef = useRef<Star[]>([]); 
-  const numStars = 1000;
+  const numStars = 500;
   const [currentGradientIndex, setCurrentGradientIndex] = useState(0);
+  const workerRef = useRef<Worker | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,28 +42,6 @@ const Background: React.FC = () => {
     }, 10000); 
     return () => clearInterval(interval);
   }, []);
-
-  // update function
-  const updateStarPositions = (stars: Star[]) => {
-    stars.forEach((star) => {
-      star.x += star.speedX;
-      star.y += star.speedY;
-
-      if (star.x < 0 || star.x > canvasRef.current!.width) {
-        star.speedX = -star.speedX;
-      }
-      if (star.y < 0 || star.y > canvasRef.current!.height) {
-        star.speedY = -star.speedY;
-      }
-
-      // transition of the size of the stars
-      if (star.isHovered && star.radius < star.targetRadius) {
-        star.radius += 0.1;
-      } else if (!star.isHovered && star.radius > star.targetRadius) {
-        star.radius -= 0.1;
-      }
-    });
-  };
 
   const drawStars = (ctx: CanvasRenderingContext2D, stars: Star[]) => {
     stars.forEach((star) => {
@@ -103,22 +82,42 @@ const Background: React.FC = () => {
       starsRef.current.push(star);
     }
 
+    workerRef.current = new Worker(
+      new URL('../webworkers/background.worker.ts', import.meta.url)
+    );
+
     let lastFrameTime = 0;
     const frameInterval = 16; // 约 60 FPS
+    let animationFrameId: number;
+
     const animate = (time: number) => {
       if (time - lastFrameTime < frameInterval) {
-        requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(animate);
         return;
       }
       lastFrameTime = time;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (workerRef.current) {
+        workerRef.current.postMessage({
+          type: 'update',
+          stars: starsRef.current,
+          canvasWidth: canvas.width,
+          canvasHeight: canvas.height
+        });
+      }
 
-      updateStarPositions(starsRef.current);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawStars(ctx, starsRef.current);
 
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     };
+
+    if (workerRef.current) {
+      workerRef.current.onmessage = (event) => {
+        starsRef.current = event.data;
+      };
+    }
+
     animate(0);
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -127,18 +126,14 @@ const Background: React.FC = () => {
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
 
-      starsRef.current.forEach((star) => {
-        const dx = star.x - mouseX;
-        const dy = star.y - mouseY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const newIsHovered = distance < star.targetRadius * 2;
-        if (newIsHovered !== star.isHovered) {
-          star.isHovered = newIsHovered;
-          star.targetRadius = newIsHovered 
-            ? star.targetRadius * 2 
-            : star.targetRadius / 2;
-        }
-      });
+      if (workerRef.current) {
+        workerRef.current.postMessage({
+          type: 'mouseMove',
+          stars: starsRef.current,
+          mouseX,
+          mouseY
+        });
+      }
     };
 
     const handleMouseClick = (e: MouseEvent) => {
@@ -147,40 +142,41 @@ const Background: React.FC = () => {
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
 
-      const baseRadius = Math.random() * 4 + 1;
-      const newStar: Star = {
-        x: mouseX,
-        y: mouseY,
-        radius: baseRadius,
-        opacity: Math.random(),
-        speedX: (Math.random() - 0.5) * 0.5,
-        speedY: (Math.random() - 0.5) * 0.5,
-        isHovered: false,
-        targetRadius: baseRadius
-      };
-      starsRef.current.push(newStar);
+      if (workerRef.current) {
+        workerRef.current.postMessage({
+          type: 'mouseClick',
+          stars: starsRef.current,
+          mouseX,
+          mouseY
+        });
+      }
     };
-
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('click', handleMouseClick);
 
-    let resizeTimeout: ReturnType<typeof setTimeout>;
+    let animationFrameId2:number;
     const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
+      animationFrameId2 = requestAnimationFrame(() => {
         updateCanvasSize();
-      }, 300);
+      })
     };
-
-    window.addEventListener('resize', handleResize);
+    const execHandleResize = () => {
+      requestIdleCallback(() => {
+        handleResize();
+      })
+    }
+    window.addEventListener('resize', execHandleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', execHandleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('click', handleMouseClick);
-      if (resizeTimeout) {
-        clearTimeout(resizeTimeout);  
+      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(animationFrameId2);
+      if (workerRef.current) {
+        workerRef.current.terminate();
       }
+      starsRef.current = [];
     };
   }, []);
 
@@ -212,4 +208,4 @@ const Background: React.FC = () => {
 };
 
 Background.displayName = 'Background';
-export default Background;
+export default React.memo(Background);
