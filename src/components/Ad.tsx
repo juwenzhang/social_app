@@ -93,7 +93,7 @@ const Ad: React.FC<AdProps>
   return(
     <React.Fragment>
       <div className='p-2 rounded-md bg-white/50 
-        shadow-md text-sm w-full'
+        shadow-md text-sm w-full flex flex-col gap-2'
       >
         {/* top */}
         <div className='flex justify-between items-center text-sm'>
@@ -133,7 +133,7 @@ const Ad: React.FC<AdProps>
                 fill
                 alt='Image'
                 loading='lazy'
-                className='object-cover rounded-lg'
+                className='object-cover rounded-lg shadow-md'
               />
             </div>)  : (
               <div className="loading-container-local">
@@ -143,9 +143,10 @@ const Ad: React.FC<AdProps>
             )
           }
         </div>
+        {/* detail */}
         <p className={`
           p-2 rounded-md bg-white/50 
-          shadow-md text-sm w-full
+          shadow-md text-sm w-full text-gray-500
           ${size === 'sm' ? "text-xs" : size ==='md'? "text-sm" : "text-base"}  
         `}>
           欢迎访问我的个人博客，这里是我的技术分享和生活记录。
@@ -153,11 +154,13 @@ const Ad: React.FC<AdProps>
           让我们一起探索技术的世界，分享知识和经验。
           欢迎来到我的博客！
         </p>
+        {/* button */}
         <button
           className='p-2 rounded-md shadow-md text-sm w-full text-white
             bg-gradient-to-r from-pink-500 to-orange-400 rounded-lg
             hover:bg-gradient-to-r hover:from-pink-600 hover:to-orange-500
             cursor-pointer transition-all duration-300 ease-in-out
+            font-semibold
         '>
           <Link href='/profile/dcadfasfaeg'>
             Learn More

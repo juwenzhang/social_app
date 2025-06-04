@@ -16,24 +16,6 @@ const nextConfig: NextConfig = {
   },
   // 开启 swc 压缩
   // swcMinify: true,
-  webpack: (config, { dev }) => {
-    if (dev) {
-      const TerserPlugin = require('terser-webpack-plugin');
-      config.optimization = {
-        ...config.optimization,
-        minimizer: [
-          new TerserPlugin({
-            terserOptions: {
-              compress: {
-                drop_console: true,
-              },
-            },
-          }),
-        ],
-      };
-    }
-    return config;
-  },
 };
 
 export default nextConfig;

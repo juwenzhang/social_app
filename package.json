@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.20.2",
+    "@prisma/client": "^6.9.0",
     "next": "15.3.2",
     "next-auth": "5.0.0-beta.28",
     "react": "^19.0.0",
@@ -24,6 +25,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
+    "prisma": "^6.9.0",
     "tailwindcss": "^4",
     "terser-webpack-plugin": "^5.3.14",
     "typescript": "^5",

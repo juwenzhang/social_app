@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -73,7 +74,7 @@ const useCompressImage = (
         URL.revokeObjectURL(result);
       }
     };
-  }, [pathname, fullImageUrl]);
+  }, [fullImageUrl]);
 
   return { result, isLoading, error };
 };

@@ -1,13 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
-interface UserInfoCardProps {
+interface UserMediaCardProps {
   children?: React.ReactNode;
   userId?: string;
 }
 
-const UserInforCard: React.FC<UserInfoCardProps> 
-= (props: UserInfoCardProps) => {
+const UserMediaCard: React.FC<UserMediaCardProps> 
+= (props: UserMediaCardProps) => {
   const {
     children,
     userId
@@ -27,9 +28,25 @@ const UserInforCard: React.FC<UserInfoCardProps>
             See All
           </Link>
         </div>
+        {/* bottom */}
+        <div className='flex gap-4 items-start justify-between flex-wrap'>
+          {Array.from({ length: 8 }).map((_, index) => {
+            return (
+              <div className='relative w-1/5 h-24' key={index}>
+                <Image
+                  src='/images/default.jpg'
+                  fill
+                  alt='default'
+                  loading='lazy'
+                  className='object-cover rounded-md'
+                />
+              </div>
+            )
+          })}
+        </div>
       </div>
     </React.Fragment>
   )
 }
 
-export default UserInforCard;
+export default UserMediaCard;

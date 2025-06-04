@@ -1,0 +1,86 @@
+interface MenuItemType {
+  id: number,
+  title: string,
+  imageUrl: string,
+  imageDesc: string,
+  route: string,
+  textColor?: string,
+  hoverColor?: string,
+}
+
+const MenuItems: MenuItemType[] = [
+  {
+    id: 1,
+    title: 'Posts',
+    imageUrl: '/images/posts.png',
+    imageDesc: 'Posts',
+    route: '/posts',
+    textColor: 'text-blue-500/50',
+    hoverColor: 'text-blue-500',
+  },
+  {
+    id: 2,
+    title: 'Activities',
+    imageUrl: '/images/Activity.png',
+    imageDesc: 'Activities',
+    route: '/activities',
+    textColor: 'text-amber-500/50',
+    hoverColor: 'text-amber-500',
+  },
+  {
+    id: 3,
+    title: 'MarketPlaces',
+    imageUrl: '/images/marketplace.png',
+    imageDesc: 'MarketPlaces',
+    route: '/marketplaces',
+    textColor: 'text-green-500/50',
+    hoverColor: 'text-green-500',
+  },
+  {
+    id: 4,
+    title: 'Events',
+    imageUrl: '/images/events.png',
+    imageDesc: 'Events',
+    route: '/events',
+    textColor: 'text-purple-500/50',
+    hoverColor: 'text-purple-500',
+  },
+  {
+    id: 5,
+    title: 'Albums',
+    imageUrl: '/images/albums.png',
+    imageDesc: 'Albums',
+    route: '/albums',
+    textColor: 'text-red-500/50',
+    hoverColor: 'text-red-500',
+  },
+  {
+    id: 6,
+    title: 'Videos',
+    imageUrl: '/images/videos.png',
+    imageDesc: 'Videos',
+    route: '/videos',
+    textColor: 'text-yellow-500/50',
+    hoverColor: 'text-yellow-500',
+  },
+  {
+    id: 7,
+    title: 'News',
+    imageUrl: '/images/news.png',
+    imageDesc: 'News',
+    route: '/news',
+    textColor: 'text-pink-500/50',
+    hoverColor: 'text-pink-500',
+  },
+  {
+    id: 8,
+    title: 'Settings',
+    imageUrl: '/images/settings.png',
+    imageDesc: 'Settings',
+    route: '/settings',
+    textColor: 'text-gray-500/50',
+    hoverColor: 'text-gray-500',
+  }
+]
+
+export default MenuItems;
