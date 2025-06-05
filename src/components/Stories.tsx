@@ -15,7 +15,7 @@ const Stories: React.FC<StoriesProps>
     <React.Fragment>
       <div 
         className='p-4 bg-white/50 rounded-lg shadow-md 
-          overflow-scroll text-sm scrollbar-hide text-xs'
+          overflow-scroll text-sm scrollbar-hide'
       >
         <div className='flex gap-8'>
           {stories.map((_, index) => (

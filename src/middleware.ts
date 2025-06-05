@@ -1,15 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
 const isProtectedRoute = createRouteMatcher([
-  '/settings(.*)'
+  '/settings(.*)',
+  '/profile(.*)',
 ]);
 
-export default clerkMiddleware((auth, req) => {
+export default clerkMiddleware(async (auth, req) => {
+  // Restrict admin routes to users with specific permissions
   if (isProtectedRoute(req)) {
-    // Redirect unauthenticated users to the sign-in page
-    
+    await auth.protect()
   }
-});
+})
 
 export const config = {
   matcher: [

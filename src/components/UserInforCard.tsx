@@ -43,10 +43,9 @@ const UserInforCard: React.FC<UserInfoCardProps>
             </span>
           </div>
           <p className='text-gray-500'>
-            欢迎访问我的个人博客，这里是我的技术分享和生活记录。
-            如果你有任何问题或建议，欢迎联系我。
-            让我们一起探索技术的世界，分享知识和经验。
-            欢迎来到我的博客！
+            I am a Rust&Golang&Python&Typescript&Web developer.
+            and also a infra&cloud engineer.
+            I am from enterprise of Bytedance!!!.
           </p>
           <div className='flex gap-2 text-gray-500 tiems-center'>
             <Image 

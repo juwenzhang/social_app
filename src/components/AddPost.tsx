@@ -1,13 +1,33 @@
 import React from "react";
 import Image from "next/image";
+import { toast } from '@/contexts/provider/ToastSsrProvider';
+import { auth } from '@clerk/nextjs/server'
+import { createPost } from "@/libs/postService";
 
 interface AddPostProps {
   children?: React.ReactNode;
 }
 
-const AddPost: React.FC<AddPostProps> 
-= (props: AddPostProps) => {
-  const { children } = props;
+const AddPost: React.FC<AddPostProps> = (
+  props: AddPostProps
+) => {
+  const textAction = async (
+    formData: FormData,
+  ) => {
+    const { userId } = await auth()
+    try {
+      const desc = formData.get("desc");
+      await createPost(
+        userId as string,
+        desc as string,
+      );
+      toast.success("add post successfully");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error("add post error" + error.message);
+      }
+    }
+  }
 
   return (
     <React.Fragment>
@@ -32,9 +52,12 @@ const AddPost: React.FC<AddPostProps>
         {/* post part */}
         <div className="flex-1">
           {/*text input  */}
-          <div className="p-1 flex gap-4 items-center justify-start">
+          <form 
+            action={textAction} 
+            className="p-1 flex gap-4 items-center justify-start"
+          >
             <textarea 
-              name="" 
+              name="desc" 
               id="" 
               cols={30}
               rows={1}
@@ -63,13 +86,23 @@ const AddPost: React.FC<AddPostProps>
               loading="lazy"
               className="cursor-pointer object-contain"
             />
-          </div>
+            <button type='submit'>
+              <Image
+                src="/images/reply.png"
+                width={24}
+                height={24}
+                alt="post"
+                loading="lazy"
+                className="cursor-pointer object-contain"
+              />
+            </button>
+          </form>
 
           {/* post options */}
           <div 
             className="
               flex items-center justify-start gap-6
-              mt-4 text-gray-400 px-3 flex-wrap"
+              mt-3 text-gray-400 px-1 flex-wrap"
           >
             <div className="
               flex gap-2 items-center text-blue-800
@@ -130,7 +163,6 @@ const AddPost: React.FC<AddPostProps>
           </div>
         </div>
       </div>
-      {children}
     </React.Fragment>
   )
 }

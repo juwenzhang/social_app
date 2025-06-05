@@ -3,6 +3,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
 import Background from "@/components/Background";
 import { ThemeProvider } from "@/contexts/provider/ThemeProvider";
+import ToastContainer from '@/contexts/provider/ToastSsrProvider';
+import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -44,6 +46,8 @@ export default function RootLayout({
               ">    
               {children}
             </div>
+            {/* toast */}
+            <ToastContainer  />
           </body>
         </html>
       </ThemeProvider>

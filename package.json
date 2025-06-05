@@ -2,6 +2,7 @@
   "name": "social_app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -10,11 +11,16 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.20.2",
+    "prisma": "^6.9.0",
     "@prisma/client": "^6.9.0",
+    "cloudinary": "^2.6.1",
+    "dotenv": "^16.5.0",
     "next": "15.3.2",
     "next-auth": "5.0.0-beta.28",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
+    "react-toastify": "^11.0.5",
     "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
@@ -25,7 +31,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
-    "prisma": "^6.9.0",
     "tailwindcss": "^4",
     "terser-webpack-plugin": "^5.3.14",
     "typescript": "^5",
