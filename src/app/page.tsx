@@ -1,9 +1,9 @@
 import React from 'react';
-import LeftMenu from '@/components/LeftMenu';
-import RightMenu from '@/components/RightMenu';
+import LeftMenu from '@/components/leftMenu/LeftMenu';
+import RightMenu from '@/components/rightMenu/RightMenu';
 import Stories from '@/components/Stories';
-import AddPost from '@/components/AddPost';
-import Feed from '@/components/Feed';
+import AddPost from '@/components/feed/AddPost';
+import Feed from '@/components/feed/Feed';
 
 interface HomePageProps{
   // children?: React.ReactNode;

@@ -1,9 +1,10 @@
 import React from'react';
-import FriendRequest from '@/components/FriendReuest';
-import Birthday from '@/components/Birthday';
+import FriendRequest from '@/components/rightMenu/FriendReuest';
+import Birthday from '@/components/rightMenu/Birthday';
 import Ad from '@/components/Ad';
-import UserInforCard from '@/components/UserInforCard';
-import UserMediaCard from '@/components/UserMediaCard';
+import UserInforCard from '@/components/rightMenu/UserInforCard';
+import UserMediaCard from '@/components/rightMenu/UserMediaCard';
+import { Suspense } from 'react';
 
 interface RightMenuProps{
   children?: React.ReactNode;
@@ -21,8 +22,12 @@ const RightMenu: React.FC<RightMenuProps>
       <div className='flex flex-col gap-4 rounded-md'>
         {userId && (
           <>
-            <UserInforCard userId={userId} />
-            <UserMediaCard userId={userId} />
+            <Suspense>
+              <UserInforCard userId={userId} />
+            </Suspense>
+            <Suspense>
+              <UserMediaCard userId={userId} />
+            </Suspense>
           </>
         )}
         <FriendRequest />

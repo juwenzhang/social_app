@@ -1,6 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getUserFolowers } from '@/libs/userService';
+import { auth } from '@clerk/nextjs/server';
 
 interface ProfileCardProps {
   children?: React.ReactNode;
@@ -8,30 +10,11 @@ interface ProfileCardProps {
 }
 
 const ProfileCard: React.FC<ProfileCardProps> 
-= (props: ProfileCardProps) => {
-  const {
-    children,
-    userId
-  } = props;
-
-  // const gradientRingAfterStyle = {
-  //   content: '""',
-  //   position: 'absolute',
-  //   top: '-5px',
-  //   left: '-5px',
-  //   right: '-5px',
-  //   bottom: '-5px',
-  //   borderRadius: 'inherit',
-  //   background: 'linear-gradient(to right, #ec4899, #f97316)',
-  //   zIndex: -1,
-  //   WebkitMask: 'linear-gradient(#fff 0 0) content-box, 
-  //   linear-gradient(#fff 0 0)',
-  //   mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-  //   WebkitMaskComposite: 'destination-out',
-  //   maskComposite: 'exclude',
-  //   pointerEvents: 'none',
-  // };
-
+= async (props: ProfileCardProps) => {
+  const { userId } = (await auth());
+  if(!userId) return;
+  const user = await getUserFolowers(userId!);
+  if(!user) return
   return(
     <React.Fragment>
       <div className='bg-white/50 rounded-md p-2
@@ -39,7 +22,7 @@ const ProfileCard: React.FC<ProfileCardProps>
       '>
         <div className='h-20 relative mb-2 shadow-md'>
           <Image
-            src='/images/default.jpg'
+            src={user!.cover as string}
             fill
             alt='Image'
             loading='lazy'
@@ -50,7 +33,7 @@ const ProfileCard: React.FC<ProfileCardProps>
             absolute left-[50%] translate-x-[-50%] bottom-[-30%]'
           >
             <Image 
-              src='/images/default.jpg'
+              src={user!.avatar as string}
               alt='default'  
               width={100}
               height={100}
@@ -62,11 +45,11 @@ const ProfileCard: React.FC<ProfileCardProps>
 
         <div className='flex flex-col items-center gap-2 p-2'>
           <span className='font-semibold gradient-text text-lg'>
-            JUWENZHANG
+            { user!.username || 'Username' }
           </span>
           <div className='gradient-text'>
             <span className='text-gray-500'>
-              500
+              { user._count.followers }
               &nbsp;
               <i>
                 <strong>

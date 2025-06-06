@@ -1,6 +1,6 @@
 "use client"
-import React, { useState } from "react";
-import Post from "@/components/Post";
+import React from "react";
+import Post from "@/components/feed/Post";
 
 interface FeedProps {
   children?: React.ReactNode;

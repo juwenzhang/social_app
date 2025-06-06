@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Ad from "@/components/Ad";
-import ProfileCard from "@/components/ProfileCard";
+import ProfileCard from "@/components/leftMenu/ProfileCard";
 import MenuItems from "@/components/configs/MenuItems";
 
 interface LeftMenuProps {

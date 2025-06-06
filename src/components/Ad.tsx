@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -27,8 +27,7 @@ interface WorkerErrorResponse {
 
 type WorkerResponse = WorkerSuccessResponse | WorkerErrorResponse;
 
-const Ad: React.FC<AdProps>
-= (props: AdProps) => {
+const Ad: React.FC<AdProps> = (props: AdProps) => {
   const {
     children,
     size = 'md',
@@ -37,37 +36,37 @@ const Ad: React.FC<AdProps>
   const [compressSrc, setCompressSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  let isMounted = true;
 
-  const fullImageUrl = typeof window!== 'undefined'
-    ? new URL(src, window.location.origin).toString()
-    : src;
+  const fullImageUrl = useMemo(() => {
+    return typeof window!== 'undefined'
+      ? new URL(src, window.location.origin).toString()
+      : src;
+  }, [src]);
+
+  const handleWorkerMessage = useCallback((event: MessageEvent<WorkerResponse>) => {
+    if ('error' in event.data) {
+      setError(new Error(event.data.error));
+      setIsLoading(false);
+    } else {
+      const url = URL.createObjectURL(event.data.data);
+      setCompressSrc(url);
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleWorkerError = useCallback((errorEvent: ErrorEvent) => {
+    setError(new Error(`Web Worker 出错: ${errorEvent.message}`));
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
+    let isMounted = true;
     const worker = new Worker(
       new URL('../webworkers/ImageCompress.worker.ts', import.meta.url),
     );
 
-    worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
-      if ('error' in event.data) {
-        if (isMounted) {
-          setError(new Error(event.data.error));
-          setIsLoading(false);
-        }
-      } else {
-        const url = URL.createObjectURL(event.data.data);
-        if (isMounted) {
-          setCompressSrc(url);
-          setIsLoading(false);
-        }
-      }
-    }
-    worker.onerror = (errorEvent) => {
-      if (isMounted) {
-        setError(new Error(`Web Worker 出错: ${errorEvent.message}`));
-        setIsLoading(false);
-      } 
-    }
+    worker.onmessage = handleWorkerMessage;
+    worker.onerror = handleWorkerError;
 
     const message: WorkerMessage = { src: fullImageUrl };
     worker.postMessage(message);
@@ -81,9 +80,9 @@ const Ad: React.FC<AdProps>
       if (compressSrc) {
         URL.revokeObjectURL(compressSrc);
       }
-    }
-  }, [])
-  
+    };
+  }, [fullImageUrl, handleWorkerMessage, handleWorkerError]);
+
   if (error) {
     return <div className='text-red/50'>
       加载图片时出错: {error.message}
@@ -138,7 +137,7 @@ const Ad: React.FC<AdProps>
             </div>)  : (
               <div className="loading-container-local">
                 <div className="loading-spinner-local"></div>
-                <p className="loading-text-local">加载中……</p>
+                <p className="loading-text-local">Loading……</p>
               </div>
             )
           }
@@ -168,7 +167,7 @@ const Ad: React.FC<AdProps>
         {children}
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
 export default Ad;

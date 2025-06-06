@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import Navbar from "@/components/Navbar";
-import Background from "@/components/Background";
+import Navbar from "@/components/Nav/Navbar";
+import Background from "@/components/base/Background";
 import { ThemeProvider } from "@/contexts/provider/ThemeProvider";
 import ToastContainer from '@/contexts/provider/ToastSsrProvider';
 import 'react-toastify/dist/ReactToastify.css';

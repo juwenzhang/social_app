@@ -6,9 +6,9 @@ import Image from 'next/image';
 import { WEBSITE_TITLE, WEBSITE_LIGHT_THEME } from '@/constants/globals';
 import { ClerkLoaded, ClerkLoading } from '@clerk/nextjs';
 import linkDatas from '@/components/configs/Navbar';
-import MobileMenu from "@/components/MobileMenu";
-import PcMenu from './PcMenu';
-import Navbarlink from "@/components/Navbarlink";
+import MobileMenu from "@/components/Nav/MobileMenu";
+import PcMenu from '@/components/Nav/PcMenu';
+import Navbarlink from "@/components/Nav/Navbarlink";
 
 interface NavbarProps{
   children?: React.ReactNode;

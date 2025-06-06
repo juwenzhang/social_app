@@ -1,4 +1,5 @@
 # My Social Posting App!!
+> https://vvsqgfab4ks.feishu.cn/wiki/PXnyw99eNiKQLfkf8yocnbuznSw?from=from_copylink
 
 > If you want to improve your develop efficiency, you can use install prisma-plugin into your vscode or trae.
 
@@ -437,3 +438,13 @@ model Story {
 
 In summary, this database schema is designed to support a social application, including user management, post creation, commenting, liking, following, follow requests, blocking, and story sharing. 
         
+## ngrok
+```bash
+docker pull ngrok/ngrok
+docker run --rm -it -e NGROK_AUTHTOKEN=your_token ngrok/ngrok http 3000
+
+# or
+https://ngrok.com/downloads/windows?tab=download
+ngrok config add-authtoken <token>
+ngrok http <you_want_ngrok_port>
+```

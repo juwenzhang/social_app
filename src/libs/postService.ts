@@ -1,5 +1,4 @@
 import prisma from "@/libs/client";
-import { toast } from '@/contexts/provider/ToastSsrProvider';
 
 export const createPost = async (
   userId: string,
@@ -18,12 +17,9 @@ export const createPost = async (
         desc: desc
       }
     });
-    toast.success("add post successfully");
     return result;
   } catch (error) {
-    if (error instanceof Error) {
-      toast.error("add post error" + error.message);
-    }
     throw error;
   }
 };
+

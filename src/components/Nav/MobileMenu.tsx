@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
 import { WEBSITE_LIGHT_THEME } from "@/constants/globals";
-import menuData from "./configs/MenuData";
+import menuData from "@/components/configs/MenuData";
 import useColor from "@/utils/setColor";
 import { usePathname } from "next/navigation";
 

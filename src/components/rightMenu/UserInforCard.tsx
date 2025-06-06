@@ -1,6 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getUser } from '@/libs/userService';
+import { notFound } from 'next/navigation';
+import { auth } from '@clerk/nextjs/server';
+import prisma from '@/libs/client';
 
 interface UserInfoCardProps {
   children?: React.ReactNode;
@@ -8,11 +12,37 @@ interface UserInfoCardProps {
 }
 
 const UserInforCard: React.FC<UserInfoCardProps> 
-= (props: UserInfoCardProps) => {
+= async (props: UserInfoCardProps) => {
   const {
-    children,
     userId
   } = props;
+  const user = await getUser(userId!);
+  if (!user) return notFound();
+
+  const createDate = new Date(user.createdAt).toLocaleDateString(
+    'en-US', 
+    {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }
+  );
+
+  const { userId: currentUserId } = (await auth());
+  let isFollowed = false;
+  if (currentUserId) {
+    if (currentUserId!== userId) {
+      const res = await prisma.follower.findFirst({
+        where: {
+          followerId: currentUserId,
+          followingId: userId,
+        }
+      });
+      if(res) isFollowed = true;
+    } else {
+      isFollowed = false;
+    }
+  }
   return(
     <React.Fragment>
       <div className='p-4 bg-white/50 rounded-lg shadow-md 
@@ -33,19 +63,19 @@ const UserInforCard: React.FC<UserInfoCardProps>
         <div className='flex flex-col gap-4 
           text-blue-500/50 font-medium'>
           <div className='flex items-center gap-2'>
-            <span className='text-xl text-black'>JuWenZhang</span>
+            <span className='text-xl text-black'>
+              { user?.username }
+            </span>
             <span className='text-blue-500'>
               <i>
                 <strong>
-                  @bytedance
+                  @{user.enterprise}
                 </strong>
               </i>
             </span>
           </div>
           <p className='text-gray-500'>
-            I am a Rust&Golang&Python&Typescript&Web developer.
-            and also a infra&cloud engineer.
-            I am from enterprise of Bytedance!!!.
+            {user.description}
           </p>
           <div className='flex gap-2 text-gray-500 tiems-center'>
             <Image 
@@ -57,11 +87,11 @@ const UserInforCard: React.FC<UserInfoCardProps>
               className='object-cover' 
             />
             <span className='ml-2'>
-              I Am Living In 
+              Living In 
               &nbsp;
               <i>
                 <strong className='text-black'>
-                  ShangHai
+                  { user.city }
                 </strong>
               </i>
             </span>
@@ -76,11 +106,11 @@ const UserInforCard: React.FC<UserInfoCardProps>
               className='object-cover' 
             />
             <span className='ml-2'>
-              I Study In 
+              Studying In 
               &nbsp;
               <i>
                 <strong className='text-black'>
-                  Post University
+                  { user.school }
                 </strong>
               </i>
             </span>
@@ -95,11 +125,11 @@ const UserInforCard: React.FC<UserInfoCardProps>
               className='object-cover' 
             />
             <span className='ml-2'>
-              I Work In
+              Working In
               &nbsp;
               <i>
                 <strong className='text-black'>
-                  ByteDance
+                  { user.enterprise }
                 </strong>
               </i>
             </span>
@@ -114,15 +144,15 @@ const UserInforCard: React.FC<UserInfoCardProps>
               className='object-cover' 
             />
             <span className='ml-2'>
-              My Github Is
+              Github Is
               &nbsp;
               <i>
                 <strong className='text-black'>
                   <Link 
-                    href="https://github.com/juwenzhang"
+                    href={user.github_link as string}
                     target='_self'
                   >
-                    juwenzhang
+                    { user.github_name }
                   </Link>
                 </strong>
               </i>
@@ -138,16 +168,35 @@ const UserInforCard: React.FC<UserInfoCardProps>
               className='object-cover' 
             />
             <span className='ml-2'>
-              My JueJin Is
+              JueJin Is
               &nbsp;
               <i>
                 <strong className='text-black'>
                   <Link 
-                    href="https://juejin.cn/user/3877322821505440"
+                    href={user.juejin_link as string}
                     target='_self'
                   >
-                    76433橘子
+                    { user.juejin_name }
                   </Link>
+                </strong>
+              </i>
+            </span>
+          </div>
+          <div className='flex gap-2 text-gray-500 tiems-center'>
+            <Image
+              src='/images/date.png'
+              width={20}
+              height={20}
+              alt='date'
+              loading='lazy'
+              className='object-cover'
+            />
+            <span className='ml-2'>
+              Joined At
+              &nbsp;
+              <i>
+                <strong className='text-black'>
+                  { createDate }
                 </strong>
               </i>
             </span>
@@ -155,17 +204,17 @@ const UserInforCard: React.FC<UserInfoCardProps>
         </div>
 
         {/* button */}
-        <button 
+        {currentUserId !== userId && <button 
           className='
             w-full py-2 font-semibold text-white 
             bg-gradient-to-r from-pink-500 to-orange-400 rounded-lg
             hover:bg-gradient-to-r hover:from-pink-600 hover:to-orange-500
             cursor-pointer transition-all duration-300 ease-in-out
           '
-        >Fellow Me</button>
-        <span
+        >{ isFollowed ? "UnFollowed" : "Follow" }</button>}
+        {currentUserId === userId && <span
           className='text-red-400 self-end text-xs cursor-pointer'
-        >Block User</span>
+        >Block User</span>}
       </div>
     </React.Fragment>
   )  

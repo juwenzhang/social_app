@@ -1,5 +1,4 @@
-"use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 
 interface PostDescProps {
@@ -38,9 +37,27 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
   const [error, setError] = useState<Error | null>(null);
   const watermarkText = "juwenzhang";
 
-  const fullImageUrl = typeof window !== 'undefined' 
-    ? new URL(src, window.location.origin).toString() 
-    : src;
+  const fullImageUrl = useMemo(() => {
+    return typeof window !== 'undefined' 
+      ? new URL(src, window.location.origin).toString() 
+      : src;
+  }, [src]);
+
+  const handleWorkerMessage = useCallback((event: MessageEvent<WorkerResponse>) => {
+    if ('error' in event.data) {
+      setError(new Error(event.data.error));
+      setIsLoading(false);
+    } else {
+      const url = URL.createObjectURL(event.data.data);
+      setWatermarkedSrc(url);
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleWorkerError = useCallback((errorEvent: ErrorEvent) => {
+    setError(new Error(`Web Worker 出错: ${errorEvent.message}`));
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -48,27 +65,8 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
       new URL('../webworkers/imageProcessing.worker.ts', import.meta.url),
     );
 
-    worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
-      if ('error' in event.data) {
-        if (isMounted) {
-          setError(new Error(event.data.error));
-          setIsLoading(false);
-        }
-      } else {
-        const url = URL.createObjectURL(event.data.data);
-        if (isMounted) {
-          setWatermarkedSrc(url);
-          setIsLoading(false);
-        }
-      }
-    };
-
-    worker.onerror = (errorEvent) => {
-      if (isMounted) {
-        setError(new Error(`Web Worker 出错: ${errorEvent.message}`));
-        setIsLoading(false);
-      }
-    };
+    worker.onmessage = handleWorkerMessage;
+    worker.onerror = handleWorkerError;
 
     const message: WorkerMessage = { src: fullImageUrl, watermarkText };
     worker.postMessage(message);
@@ -80,7 +78,7 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
         URL.revokeObjectURL(watermarkedSrc);
       }
     };
-  }, []);
+  }, [fullImageUrl, watermarkText, handleWorkerMessage, handleWorkerError]);
 
   if (error) {
     return <div>加载图片时出错: {error.message}</div>;
@@ -93,7 +91,7 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
           {isLoading ? (
             <div className="loading-container-local">
               <div className="loading-spinner-local"></div>
-              <p className="loading-text-local">加载中……</p>
+              <p className="loading-text-local">Loading……</p>
             </div>
           ) : (
             <a
@@ -107,7 +105,7 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
                 alt={alt}
                 fill
                 loading='lazy'
-                className='w-full h-full object-cover rounded-lg'
+                className='w-full h-full object-cover rounded-lg shadow-md'
               />
             </a>
           )}

@@ -83,7 +83,7 @@ const Background: React.FC = () => {
     }
 
     workerRef.current = new Worker(
-      new URL('../webworkers/background.worker.ts', import.meta.url)
+      new URL('../../webworkers/background.worker.ts', import.meta.url)
     );
 
     let lastFrameTime = 0;

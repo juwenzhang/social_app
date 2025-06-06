@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { toast } from '@/contexts/provider/ToastSsrProvider';
 import { auth } from '@clerk/nextjs/server'
 import { createPost } from "@/libs/postService";
 
@@ -14,17 +13,20 @@ const AddPost: React.FC<AddPostProps> = (
   const textAction = async (
     formData: FormData,
   ) => {
+    "use server";
     const { userId } = await auth()
     try {
-      const desc = formData.get("desc");
-      await createPost(
-        userId as string,
-        desc as string,
-      );
-      toast.success("add post successfully");
+      if (userId) {
+        // console.log(userId)
+        const desc = formData.get("desc") as string;
+        const result = await createPost(userId, desc);
+        // console.log(result)
+      } else {
+        console.log("user not found")
+      }
     } catch (error) {
       if (error instanceof Error) {
-        toast.error("add post error" + error.message);
+        console.log(error.message) 
       }
     }
   }
