@@ -104,7 +104,7 @@ const ProfilePage: React.FC<{
         </Suspense>
         <div className='hidden lg:block w-[30%]'>
           <RightMenu 
-            userId={id}
+            userId={id} 
           />
         </div>
       </div>

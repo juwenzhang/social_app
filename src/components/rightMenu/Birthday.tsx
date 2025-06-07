@@ -69,12 +69,12 @@ const Birthday: React.FC<BirthdayProps>
               gap-1 items-center justify-between'
           >
             <span
-              className='font-semibold text-blue-500/50'
+              className='text-sm gradient-text font-semibold'
             >
               UpComing Birthday
             </span>
             <span
-              className='text-xs text-blue-500/50'
+              className='text-sm gradient-text font-semibold'
             >
               12/12/2024
             </span>

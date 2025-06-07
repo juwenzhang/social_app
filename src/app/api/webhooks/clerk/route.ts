@@ -69,9 +69,9 @@ export async function POST(req: Request) {
         "unknown",
         "unknown",
         "unknown",
-        "register or login with github",
+        "unknown",
         "https://github.com",
-        "register or login with juejin",
+        "unknown",
         "https://juejin.cn"
       );
       console.log("User created:", res);

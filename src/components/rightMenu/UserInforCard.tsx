@@ -5,6 +5,8 @@ import { getUser } from '@/libs/userService';
 import { notFound } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import prisma from '@/libs/client';
+import UserInforCardInteraction from '@/components/rightMenu/userInforCardInteraction';
+import UpdateUser from './updateUser';
 
 interface UserInfoCardProps {
   children?: React.ReactNode;
@@ -43,6 +45,36 @@ const UserInforCard: React.FC<UserInfoCardProps>
       isFollowed = false;
     }
   }
+
+  let isBlocked = false;
+  if (currentUserId) {
+    if (currentUserId!== userId) {
+      const res = await prisma.block.findFirst({
+        where: {
+          blockerId: currentUserId,
+          blockedId: userId,
+        }
+      });
+      if(res) isBlocked = true;
+    } else {
+      isBlocked = false;
+    }
+  }
+
+  let isFollowingSent = false;
+  if (currentUserId) {
+    if (currentUserId!== userId) {
+      const res = await prisma.follower.findFirst({
+        where: {
+          followerId: userId,
+          followingId: currentUserId,
+        }
+      });
+      if(res) isFollowingSent = true;
+    } else {
+      isFollowingSent = false;
+    }
+  }
   return(
     <React.Fragment>
       <div className='p-4 bg-white/50 rounded-lg shadow-md 
@@ -51,12 +83,12 @@ const UserInforCard: React.FC<UserInfoCardProps>
         {/* top */}
         <div className='flex justify-between items-center font-medium'>
           <span className='font-semibold gradient-text'>User Information</span>
-          <Link
+          {(currentUserId === userId) ? <UpdateUser /> : <Link
             href={`/user/${userId}`}
-            className='text-sm text-blue-500 font-semibold'
+            className='text-sm gradient-text font-semibold'
           >
             See All
-          </Link>
+          </Link>}
         </div>
 
         {/* detail info */}
@@ -203,18 +235,13 @@ const UserInforCard: React.FC<UserInfoCardProps>
           </div>
         </div>
 
-        {/* button */}
-        {currentUserId !== userId && <button 
-          className='
-            w-full py-2 font-semibold text-white 
-            bg-gradient-to-r from-pink-500 to-orange-400 rounded-lg
-            hover:bg-gradient-to-r hover:from-pink-600 hover:to-orange-500
-            cursor-pointer transition-all duration-300 ease-in-out
-          '
-        >{ isFollowed ? "UnFollowed" : "Follow" }</button>}
-        {currentUserId === userId && <span
-          className='text-red-400 self-end text-xs cursor-pointer'
-        >Block User</span>}
+        <UserInforCardInteraction
+          userId={userId!}
+          currentUserId={currentUserId!}
+          isUserBlocked={isBlocked}
+          isFollowing={isFollowed}
+          isFollowingSent={isFollowingSent}
+        />
       </div>
     </React.Fragment>
   )  

@@ -3,7 +3,7 @@ import React from "react";;
 import PostUser from "@/components/PostUser";
 import PostDesc from "@/components/PostDesc";
 import PostInterItem from "@/components/PostInterItem";
-import Comments from "@/components/Comments";
+import Comments from "@/components/feed/Comments";
 import InterConfig from "@/components/configs/InterConfig";
 
 interface PostProps {

@@ -21,7 +21,7 @@ const FriendRequest: React.FC<FriendRequestProps>
           </span>
           <Link
             href='/'
-            className='text-blue-500'>
+            className='text-sm gradient-text font-semibold'>
             See All
           </Link>
         </div>
