@@ -1,4 +1,5 @@
 import prisma from "@/libs/client";
+import { NextRequest, NextResponse } from "next/server";
 
 export const switchFollow = async (userId: string, currentUserId: string) => {
   try {
@@ -37,38 +38,28 @@ export const switchFollow = async (userId: string, currentUserId: string) => {
         });
       }
     }
+    return { success: true };
   } catch (error) {
     console.error("Error saving user to database:", error);
-    return new Response("Filed to update the user", {
-      status: 500
-    })
+    return { success: false, error: "Failed to update the user" };
   }
 }
 
-export const switchBlock = async (userId: string, currentUserId: string) => {
+export async function POST(req: NextRequest) {
   try {
-    const existingBlock = await prisma.block.findFirst({
-      where: {
-        blockerId: currentUserId,
-        blockedId: userId,
-      }
-    });
+    const { userId, currentUserId } = await req.json();
+    if (!userId || !currentUserId) {
+      return NextResponse.json({ success: false, error: "Missing required parameters" }, { status: 400 });
+    }
 
-    if (existingBlock) {
-      await prisma.block.delete({
-        where: {
-          id: existingBlock.id,
-        }
-      })
+    const result = await switchFollow(userId, currentUserId);
+    if (result.success) {
+      return NextResponse.json(result, { status: 200 });
     } else {
-      await prisma.block.create({
-        data: {
-          blockerId: currentUserId,
-          blockedId: userId,
-        }
-      })
+      return NextResponse.json(result, { status: 500 });
     }
   } catch (error) {
-    console.error("Error saving user to database:", error);
+    console.error("Error handling POST request:", error);
+    return NextResponse.json({ success: false, error: "An error occurred while processing the request" }, { status: 500 });
   }
 }

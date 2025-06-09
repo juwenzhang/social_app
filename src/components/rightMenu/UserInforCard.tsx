@@ -61,18 +61,18 @@ const UserInforCard: React.FC<UserInfoCardProps>
     }
   }
 
-  let isFollowingSent = false;
+  let isFollowRequestSent = false;
   if (currentUserId) {
     if (currentUserId!== userId) {
-      const res = await prisma.follower.findFirst({
+      const res = await prisma.followRequest.findFirst({
         where: {
-          followerId: userId,
-          followingId: currentUserId,
+          senderId: currentUserId,
+          receiverId: userId,
         }
       });
-      if(res) isFollowingSent = true;
+      if(res) isFollowRequestSent = true;
     } else {
-      isFollowingSent = false;
+      isFollowRequestSent = false;
     }
   }
   return(
@@ -240,7 +240,7 @@ const UserInforCard: React.FC<UserInfoCardProps>
           currentUserId={currentUserId!}
           isUserBlocked={isBlocked}
           isFollowing={isFollowed}
-          isFollowingSent={isFollowingSent}
+          isFollowingSent={isFollowRequestSent}
         />
       </div>
     </React.Fragment>

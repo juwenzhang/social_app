@@ -7,14 +7,11 @@ interface AdProps{
   children?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
   src?: string;
+  userId: string;
 }
 
 interface WorkerMessage {
   src: string;
-}
-
-interface WorkResponse {
-  data: Blob;
 }
 
 interface WorkerSuccessResponse {
@@ -31,7 +28,8 @@ const Ad: React.FC<AdProps> = (props: AdProps) => {
   const {
     children,
     size = 'md',
-    src = '/images/default.jpg'
+    src = '/images/default.jpg',
+    userId
   } = props;
   const [compressSrc, setCompressSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -160,7 +158,7 @@ const Ad: React.FC<AdProps> = (props: AdProps) => {
             cursor-pointer transition-all duration-300 ease-in-out
             font-semibold
         '>
-          <Link href='/profile/dcadfasfaeg'>
+          <Link href={`/profile/${userId}`}>
             Learn More
           </Link>
         </button>

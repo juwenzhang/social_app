@@ -53,7 +53,7 @@ const LeftMenu: React.FC<LeftMenuProps> = (props: LeftMenuProps) => {
             )
           })}
         </div>
-        <Ad size="sm" />
+        <Ad size="sm" userId={userId as string} />
         {children}
       </div>
     </React.Fragment>

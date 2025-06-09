@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useOptimistic } from "react";
-import { switchFollow, switchBlock } from "@/libs/useraction";
 
 interface UserInfoCardInteractionProps {
   userId: string; 
@@ -19,10 +18,18 @@ const UserInfoCardInteraction = (props: UserInfoCardInteractionProps) => {
   })
 
   const handleFollow = async () => {
-    switchOptimisticFollow("follow");
+    switchOptimistic("follow");
     try {
-      const res = await switchFollow(userId, currentUserId!);
-      if (res) {
+      const response = await fetch('/api/follow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, currentUserId: currentUserId! }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
         useUserState(prev => {
           return {
             ...prev,
@@ -37,21 +44,31 @@ const UserInfoCardInteraction = (props: UserInfoCardInteractionProps) => {
   }
 
   const handleBlock = async () => {
-    switchOptimisticFollow("block");
+    switchOptimistic("block");
     try {
-      await switchBlock(userId, currentUserId!);
-      useUserState(prev => {
-        return {
-         ...prev,
-          isUserBlocked:!prev.isUserBlocked,
-        }
-      }) 
+      const response = await fetch('/api/block', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, currentUserId: currentUserId! }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        useUserState(prev => {
+          return {
+           ...prev,
+            isUserBlocked: prev.isUserBlocked,
+          }
+        }) 
+      }
     } catch (error) {
       console.log(error);
     }
   }
 
-  const [optimisticFollow, switchOptimisticFollow] = useOptimistic(userState, 
+  const [optimistic, switchOptimistic] = useOptimistic(userState, 
     (state, value: "follow" | "block") => {
     switch(value) {
       case "follow": {
@@ -89,12 +106,17 @@ const UserInfoCardInteraction = (props: UserInfoCardInteractionProps) => {
                 hover:bg-gradient-to-r hover:from-pink-600 hover:to-orange-500
                 cursor-pointer transition-all duration-300 ease-in-out
               '
-            >{ optimisticFollow.isFollowing ? "Following" : optimisticFollow.isFollowingSent ? "Friend Request Sent" : "Follow" }</button>
+            >{ optimistic.isFollowing 
+                ? "Following" 
+                : optimistic.isFollowingSent 
+                  ? "Friend Request Sent" 
+                  : "Follow" }
+            </button>
           </form>
           <form action={handleBlock} className="self-end">
             <button
               className='text-red-400 self-end text-xs cursor-pointer'
-            >{ optimisticFollow.isUserBlocked ? "UnBlock User" : "Block User" }</button> 
+            >{ optimistic.isUserBlocked ? "UnBlock User" : "Block User" }</button> 
           </form>
         </>
       }

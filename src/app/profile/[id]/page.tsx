@@ -38,11 +38,27 @@ const ProfilePage: React.FC<{
   }
   if (isBlocked) return notFound();
 
+  let isBlockedByCurrentUser = false;
+  if (userId) {
+    if (userId!== id) {
+      const res = await prisma.block.findFirst({
+        where: {
+          blockerId: id,
+          blockedId: userId,
+        }
+      });
+      if(res) isBlockedByCurrentUser = true;
+    } else {
+      isBlockedByCurrentUser = false;
+    }
+  }
+  if (isBlockedByCurrentUser) return notFound();
+
   return(
     <React.Fragment>
       <div className='flex gap-6 pt-6'>
         <div className='hidden xl:block w-[20%]'>
-          <LeftMenu type='profile' userId='1234567890' />
+          <LeftMenu type='profile' userId={id} />
         </div>
         <Suspense>
           <div className='w-full lg:w-[70%] xl:w-[50%]'>

@@ -32,7 +32,7 @@ const RightMenu: React.FC<RightMenuProps>
         )}
         <FriendRequest />
         <Birthday />
-        <Ad size='md' />
+        <Ad size='md' userId={userId as string} />
         {children} 
       </div>
     </React.Fragment>

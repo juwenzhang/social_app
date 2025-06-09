@@ -23,3 +23,39 @@ export const createPost = async (
   }
 };
 
+export const getAllPosts = async () => {
+  try {
+    const posts = await prisma.post.findMany({
+      include: {
+        user: true,
+        likes: true,
+        comments: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+    return posts;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const getPostsByUserId = async (userId: string) => {
+  try {
+    const posts = await prisma.post.findMany({
+      where: { userId },
+      include: {
+        user: true,
+        likes: true,
+        comments: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+    return posts;
+  } catch (error) {
+    throw error;
+  }
+}

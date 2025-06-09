@@ -9,7 +9,7 @@ interface HomePageProps{
   // children?: React.ReactNode;
 }
 
-const HomePage: React.FC<HomePageProps> = () => {
+const HomePage: React.FC<HomePageProps> = async () => {
   return(
     <React.Fragment>
       <div className='flex gap-6 pt-6'>
