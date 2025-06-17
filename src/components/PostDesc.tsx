@@ -7,6 +7,7 @@ interface PostDescProps {
   alt?: string;
   title?: string;
   content?: string;
+  username?: string;
 }
 
 interface WorkerMessage {
@@ -31,11 +32,12 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
     alt = 'Image Do Not Load',
     title = 'Image',
     content = 'Content',
+    username
   } = props;
   const [watermarkedSrc, setWatermarkedSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const watermarkText = "juwenzhang";
+  const watermarkText = username as string
 
   const fullImageUrl = useMemo(() => {
     return typeof window !== 'undefined' 
@@ -68,9 +70,11 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
     worker.onmessage = handleWorkerMessage;
     worker.onerror = handleWorkerError;
 
-    const message: WorkerMessage = { src: fullImageUrl, watermarkText };
+    const message: WorkerMessage = { 
+      src: fullImageUrl, 
+      watermarkText: `${watermarkText} @jwz_social_app` 
+    };
     worker.postMessage(message);
-
     return () => {
       isMounted = false;
       worker.terminate();

@@ -80,7 +80,7 @@ const Navbar:React.FC<NavbarProps>
                   className={twMerge(
                     `bg-transparent outlint-none px-2 py-1 
                       placeholder:text-gray-400 text-sm font-semibold
-                      border-none focus:ring-0 focus:border-none
+                      border-none
                       focus:outline-none focus:ring-0 focus:border-none
                     `,
                     WEBSITE_LIGHT_THEME.WEBSITE_NAVBAR_COLOR,
@@ -111,8 +111,8 @@ const Navbar:React.FC<NavbarProps>
                 <span
                   className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap 
                     !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-                  >Loading...</span
-                >
+                  >Loading...
+                </span>
               </div>
             </ClerkLoading>
             <ClerkLoaded>

@@ -1,7 +1,7 @@
 import prisma from "@/libs/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export const switchFollow = async (userId: string, currentUserId: string) => {
+const switchFollow = async (userId: string, currentUserId: string) => {
   try {
     const existingFollow = await prisma.follower.findFirst({
       where: {

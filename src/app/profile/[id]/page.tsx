@@ -9,10 +9,8 @@ import { notFound } from 'next/navigation';
 import prisma from '@/libs/client';
 import { Suspense } from 'react';
 
-const ProfilePage: React.FC<{
-  params: { id: string }
-}> = async (
-  { params }: { params: { id: string } }
+const ProfilePage = async (
+  { params } : { params: Promise<{ id: string }> }
 ) => {
   // verify current user
   const { id } = await params;
@@ -114,7 +112,7 @@ const ProfilePage: React.FC<{
                   </div>
                 </div>
               </div>
-              <Feed />
+              <Feed user={user.username} />
             </div>
           </div>
         </Suspense>

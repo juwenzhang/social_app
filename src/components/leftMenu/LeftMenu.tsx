@@ -31,7 +31,7 @@ const LeftMenu: React.FC<LeftMenuProps> = (props: LeftMenuProps) => {
                 key={item.id}
                 href={item.route}
                 className={`text-sm font-semibold
-                  flex items-center gap-4 items-center
+                  flex items-center gap-4 
                   hover:bg-gray-300 p-2 rounded-md
                 `}
               >

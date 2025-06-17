@@ -80,24 +80,26 @@ const AddPost: React.FC<AddPostProps> = (
               style={{ backgroundColor: '#f3f4f6', color: '#374151' }}
               placeholder="What's on your mind?"
             />
-            <Image 
-              src="/images/emoji.png" 
-              width={24} 
-              height={24} 
-              alt="emoji"
-              loading="lazy"
-              className="cursor-pointer object-contain"
-            />
-            <button type='submit'>
-              <Image
-                src="/images/reply.png"
-                width={24}
-                height={24}
-                alt="post"
+            <div className="flex gap-4">
+              <Image 
+                src="/images/emoji.png" 
+                width={24} 
+                height={24} 
+                alt="emoji"
                 loading="lazy"
                 className="cursor-pointer object-contain"
               />
-            </button>
+              <button type='submit'>
+                <Image
+                  src="/images/reply.png"
+                  width={24}
+                  height={24}
+                  alt="post"
+                  loading="lazy"
+                  className="cursor-pointer object-contain"
+                />
+              </button>
+            </div>
           </form>
 
           {/* post options */}

@@ -1,17 +1,16 @@
-"use client"
 import React from "react";
 import Post from "@/components/feed/Post";
 
 interface FeedProps {
   children?: React.ReactNode;
-  userId?: string;
+  user?: string;
 }
 
 const Feed: React.FC<FeedProps> 
-= (props: FeedProps) => {
+= async (props: FeedProps) => {
   const { 
     children,
-    userId 
+    user
   } = props;
   const arr = Array.from({length: 10}).fill(0)
 
@@ -21,22 +20,19 @@ const Feed: React.FC<FeedProps>
         p-4 bg-white/50 shadow-md rounded-lg flex
         flex-col gap-12 mb-4
       ">
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
+        <Post user={user} />
         {children}
       </div>
     </React.Fragment>

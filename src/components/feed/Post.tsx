@@ -8,21 +8,22 @@ import InterConfig from "@/components/configs/InterConfig";
 
 interface PostProps {
   children?: React.ReactNode;
+  user?: string
 }
 
 const Post: React.FC<PostProps> 
 = (props: PostProps) => {
-  const { children } = props;
+  const { children, user } = props;
   return (
     <React.Fragment>
       <div 
         className="flex flex-col gap-4 shadow-md p-4 rounded-lg"
       >
         {/* user part */}
-        <PostUser />
+        <PostUser username={user} />
 
         {/* DESC part */}
-        <PostDesc />
+        <PostDesc username={user} />
 
         {/* interactions */}
         <div className="flex items-center justify-between text-sm mt-4">

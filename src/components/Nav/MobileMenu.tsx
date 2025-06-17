@@ -59,8 +59,7 @@ const MobileMenu: React.FC<MobileMenuProps>
         {isOpen && (
           <>
             <div className="
-              absolute left-0 top-24 w-full h-[calc(100vh-96px)] 
-              bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-90 
+              absolute left-0 top-24 w-full h-[calc(100vh-96px)] bg-white
               flex flex-col gap-[16px] items-center justify-center font-semibold
               text-xl z-10"
               onScroll={(e) => {
