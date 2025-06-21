@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { twMerge } from 'tailwind-merge';
 
 interface StoryItemProps{
@@ -9,6 +10,7 @@ interface StoryItemProps{
   width?: number;
   height?: number;
   title?: string;
+  userId?: string;
   className?: string;
 }
 
@@ -21,6 +23,7 @@ const StoryItem: React.FC<StoryItemProps>
     width = 100, 
     height = 100, 
     title = 'Image', 
+    userId,
     className
   } = props;
 
@@ -35,14 +38,19 @@ const StoryItem: React.FC<StoryItemProps>
       }>
         <div className='w-15 h-15 rounded-full ring-2 
           ring-gray-300 overflow-hidden'>
-          <Image 
-            src={src} 
-            alt={alt}  
-            width={width}
-            height={height}
-            loading='lazy'
-            className='object-cover'
-          />
+          <Link
+            href={`/profile/${userId}`}
+            passHref
+          >
+            <Image 
+              src={src} 
+              alt={alt}  
+              width={width}
+              height={height}
+              loading='lazy'
+              className='object-cover'
+            />
+          </Link>  
         </div>
         <span className='font-semibold gradient-text'>
           {title}

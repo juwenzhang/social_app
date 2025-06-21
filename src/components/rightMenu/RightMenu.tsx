@@ -30,8 +30,8 @@ const RightMenu: React.FC<RightMenuProps>
             </Suspense>
           </>
         )}
-        <FriendRequest />
-        <Birthday />
+        <FriendRequest userId={userId} />
+        <Birthday userId={userId} />
         <Ad size='md' userId={userId as string} />
         {children} 
       </div>

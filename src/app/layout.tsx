@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Nav/Navbar";
 // import Background from "@/components/base/Background";
+import StarBackground from "@/components/base/StarBackground";
 import { ThemeProvider } from "@/contexts/provider/ThemeProvider";
 import ToastContainer from '@/contexts/provider/ToastSsrProvider';
+import { auth } from "@clerk/nextjs/server"
 import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
 
@@ -15,11 +17,14 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const { userId } = await auth();
+
   return (
     <ClerkProvider>
       <ThemeProvider>
@@ -30,12 +35,13 @@ export default function RootLayout({
             `}
           >
             {/* background */}
-            <div className="fixed">
+            <div className="absolute">
               {/* <Background /> */}
+              <StarBackground />
             </div>
 
             {/* navbar */}
-            <Navbar />
+            <Navbar userId={userId as string} />
           
             {/* main content */}
             <div

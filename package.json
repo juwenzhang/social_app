@@ -20,6 +20,7 @@
     "@prisma/client": "^6.9.0",
     "cloudinary": "^2.6.1",
     "dotenv": "^16.5.0",
+    "lodash": "^4.17.21",
     "next": "15.3.2",
     "next-auth": "5.0.0-beta.28",
     "prisma": "^6.9.0",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/lodash": "^4.17.18",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -43,5 +45,6 @@
     "typescript": "^5",
     "worker-loader": "^3.0.8"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
 }

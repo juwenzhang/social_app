@@ -24,13 +24,18 @@ const menuData: MenuItemType[] = [
     id: 4, title: "Stories", 
     link: "/stories", 
   },
+  {
+    id: 5,
+    title: "Profile",
+    link: "/profile",
+  },
   { 
-    id: 5, 
+    id: 7, 
     title: "Login", 
     link: "/sign-in", 
   },
   {
-    id: 6,
+    id: 8,
     title: "Register",
     link: "/sign-up",
   }

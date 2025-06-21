@@ -50,7 +50,7 @@ const ProfileCard: React.FC<ProfileCardProps>
           <div className='gradient-text'>
             <span className='text-gray-500'>
               { user._count.followers }
-              &nbsp;
+              &nbsp; 
               <i>
                 <strong>
                   Fellows

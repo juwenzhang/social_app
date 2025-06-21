@@ -9,11 +9,12 @@ import { usePathname } from "next/navigation";
 
 interface MobileMenuProps {
   children?: React.ReactNode;
+  userId: string
 }
 
 const MobileMenu: React.FC<MobileMenuProps> 
 = (props: MobileMenuProps) => {
-  const { children } = props;
+  const { children, userId } = props;
   const colorFunc = useColor();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -67,7 +68,11 @@ const MobileMenu: React.FC<MobileMenuProps>
               }}
             >
               {menuData.map((item) => (
-                <Link key={item.id} href={item.link}>
+                <Link key={item.id} href={
+                  item.link !== "/profile" 
+                    ? item.link
+                    : item.link + "/" + userId
+                }>
                   <div style={
                     { color: colorFunc.getRandomHSLAColor() }
                   }>

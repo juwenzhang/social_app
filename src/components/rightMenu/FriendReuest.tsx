@@ -1,16 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import FriendsRequestList from '@/components/rightMenu/FriendsRequestList';
-import { auth } from '@clerk/nextjs/server';
 
 interface FriendRequestProps{
   children?: React.ReactNode;
+  userId?: string;
 }
 
 const FriendRequest: React.FC<FriendRequestProps>
 = async (props: FriendRequestProps) => {
-  const {children} = props;
-  const { userId } = await auth();
+  const {children, userId} = props;
   return(
     <React.Fragment>
       <div className='p-2 rounded-md bg-white/50 

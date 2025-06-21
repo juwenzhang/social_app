@@ -14,6 +14,7 @@ const ProfilePage = async (
 ) => {
   // verify current user
   const { id } = await params;
+  // console.log(id)
   if(!id) return notFound(); 
   const user = await getUser(id!);
   if(!user) return notFound();

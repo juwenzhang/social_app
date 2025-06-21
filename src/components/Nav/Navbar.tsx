@@ -12,11 +12,12 @@ import Navbarlink from "@/components/Nav/Navbarlink";
 
 interface NavbarProps{
   children?: React.ReactNode;
+  userId: string
 }
 
 const Navbar:React.FC<NavbarProps> 
 = (props: NavbarProps) => {
-  const {children} = props;
+  const {children, userId} = props;
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -118,7 +119,7 @@ const Navbar:React.FC<NavbarProps>
             <ClerkLoaded>
               <PcMenu />
             </ClerkLoaded>
-            <MobileMenu />
+            <MobileMenu userId={userId} />
           </div>
         </div>
       </div>

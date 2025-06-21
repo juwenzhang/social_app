@@ -1,5 +1,4 @@
-'use client';
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -10,82 +9,12 @@ interface AdProps{
   userId: string;
 }
 
-interface WorkerMessage {
-  src: string;
-}
-
-interface WorkerSuccessResponse {
-  data: Blob;
-}
-
-interface WorkerErrorResponse {
-  error: string;
-}
-
-type WorkerResponse = WorkerSuccessResponse | WorkerErrorResponse;
-
 const Ad: React.FC<AdProps> = (props: AdProps) => {
   const {
     children,
     size = 'md',
-    src = '/images/default.jpg',
     userId
   } = props;
-  const [compressSrc, setCompressSrc] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fullImageUrl = useMemo(() => {
-    return typeof window!== 'undefined'
-      ? new URL(src, window.location.origin).toString()
-      : src;
-  }, [src]);
-
-  const handleWorkerMessage = useCallback((event: MessageEvent<WorkerResponse>) => {
-    if ('error' in event.data) {
-      setError(new Error(event.data.error));
-      setIsLoading(false);
-    } else {
-      const url = URL.createObjectURL(event.data.data);
-      setCompressSrc(url);
-      setIsLoading(false);
-    }
-  }, []);
-
-  const handleWorkerError = useCallback((errorEvent: ErrorEvent) => {
-    setError(new Error(`Web Worker 出错: ${errorEvent.message}`));
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-    const worker = new Worker(
-      new URL('../webworkers/ImageCompress.worker.ts', import.meta.url),
-    );
-
-    worker.onmessage = handleWorkerMessage;
-    worker.onerror = handleWorkerError;
-
-    const message: WorkerMessage = { src: fullImageUrl };
-    worker.postMessage(message);
-
-    return () => {
-      isMounted = false;
-      setIsLoading(false);
-      setError(null);
-      setCompressSrc(null);
-      worker.terminate();
-      if (compressSrc) {
-        URL.revokeObjectURL(compressSrc);
-      }
-    };
-  }, [fullImageUrl, handleWorkerMessage, handleWorkerError]);
-
-  if (error) {
-    return <div className='text-red/50'>
-      加载图片时出错: {error.message}
-    </div>;
-  }
 
   return(
     <React.Fragment>
@@ -123,43 +52,54 @@ const Ad: React.FC<AdProps> = (props: AdProps) => {
             }
           `}
         >
-          {!isLoading ? 
-            (<div>
-              <Image
-                src={compressSrc || '/images/default.jpg'}
-                fill
-                alt='Image'
-                loading='lazy'
-                className='object-cover rounded-lg shadow-md'
-              />
-            </div>)  : (
-              <div className="loading-container-local">
-                <div className="loading-spinner-local"></div>
-                <p className="loading-text-local">Loading……</p>
-              </div>
-            )
-          }
+          <div>
+            <Image
+              src={'/images/favicon.png'}
+              fill
+              alt='Image'
+              loading='lazy'
+              className='object-cover rounded-lg shadow-md'
+            />
+          </div>
         </div>
         {/* detail */}
-        <p className={`
+        <div className={` 
           p-2 rounded-md bg-white/50 
           shadow-md text-sm w-full text-gray-500
           ${size === 'sm' ? "text-xs" : size ==='md'? "text-sm" : "text-base"}  
         `}>
-          I am a Rust&Golang&Python&Typescript&Web developer.
-          and also a infra&cloud engineer.
-          I am from enterprise of Bytedance!!!.
-        </p>
+          <strong>
+            Welcome to JUWENZHANG Multi-User Social Platform! Share your thoughts, 
+            connect with amazing people, and create memorable moments together!🌟💬✌❤
+          </strong>
+          <strong>
+            <div>
+              author: <span className='border-b-1'>JUWENZHANG</span>
+            </div>
+            <div>
+              contact information in the GitHub: 
+              &nbsp;<a 
+                href='https://github.com/juwenzhang' 
+                target='_blank' rel='noopener noreferrer'
+                className='text-blue-500 border-b-1'>
+                  juwenzhang
+                </a>
+            </div>
+            <div>
+              You Can Follow Me, Will Get Some New Friends!
+            </div>
+          </strong>
+        </div>
         {/* button */}
         <button
           className='p-2 rounded-md shadow-md text-sm w-full text-white
-            bg-gradient-to-r from-pink-500 to-orange-400 rounded-lg
+            bg-gradient-to-r from-pink-500 to-orange-400
             hover:bg-gradient-to-r hover:from-pink-600 hover:to-orange-500
             cursor-pointer transition-all duration-300 ease-in-out
             font-semibold
         '>
           <Link href={`/profile/${userId}`}>
-            Learn More
+            Learn More About JuWenZhang
           </Link>
         </button>
         {children}

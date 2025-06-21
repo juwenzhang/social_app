@@ -4,11 +4,12 @@ import Link from 'next/link';
 
 interface BirthdayProps{
   children?: React.ReactNode;
+  userId?: string
 }
 
 const Birthday: React.FC<BirthdayProps>
 = (props: BirthdayProps) => {
-  const {children} = props;
+  const {children, userId} = props;
   return(
     <React.Fragment>
       <div className='p-2 rounded-md bg-white/50 

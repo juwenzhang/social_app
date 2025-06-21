@@ -72,7 +72,7 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
 
     const message: WorkerMessage = { 
       src: fullImageUrl, 
-      watermarkText: `${watermarkText} @jwz_social_app` 
+      watermarkText: `${watermarkText ? watermarkText : ""} @jwz_social_app` 
     };
     worker.postMessage(message);
     return () => {
