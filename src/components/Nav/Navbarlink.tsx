@@ -1,8 +1,8 @@
 "use client"
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
+import { Image as ImageKit } from '@imagekit/next';
 
 interface NavbarlinkProps{
   children?: React.ReactNode;
@@ -40,7 +40,7 @@ const Navbarlink:React.FC<NavbarlinkProps>
           className || ""
         )}
       >
-        <Image 
+        <ImageKit 
           width={imageWidth} 
           height={imageHeight} 
           src={imageSrc} 

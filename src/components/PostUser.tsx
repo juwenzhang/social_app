@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { Image as ImageKit } from '@imagekit/next';
 
 interface PostUserProps{
   children?: React.ReactNode;
@@ -40,7 +41,7 @@ const PostUser: React.FC<PostUserProps>
           />
           <span className='font-semibold gradient-text flex-start'>{username}</span>
         </div>
-        <Image
+        <ImageKit
           src='/images/more.png'
           alt='More'
           width={16}

@@ -1,20 +1,29 @@
 import React from 'react';
 import Image from 'next/image';
+import { Image as ImageKit } from '@imagekit/next';
 
 interface CommentProps{
   children?: React.ReactNode;
+  user?: any;
 }
 
 const Comments: React.FC<CommentProps>
 = (props: CommentProps) => {
-  const {children} = props;
+  const {children, user} = props;
+  // const { userId } = await auth();
+  console.log(user)
+
   return(
     <React.Fragment>
       <div className='mt-4 p-4 bg-white/50 rounded-lg shadow-md'>
         {/* write */}
         <div className='flex items-center gap-4'>
           <Image
-            src='/images/default.jpg'
+            src={
+              user?.avatar
+                ? user.avatar
+                : "/images/default.jpg"
+            }
             alt='Image Do Not Load'
             width={32}
             height={32}
@@ -40,7 +49,7 @@ const Comments: React.FC<CommentProps>
               "
               placeholder="Write Some Comments Here"
             />
-            <Image
+            <ImageKit
               src='/images/emoji.png'
               alt='Image Do Not Load'
               width={24}
@@ -78,7 +87,7 @@ const Comments: React.FC<CommentProps>
             {/* iterator */}
             <div className='flex gap-4 items-center cursor-pointer'>
               <div className='flex'>
-                <Image
+                <ImageKit
                   src='/images/like.png'
                   alt='Image Do Not Load'
                   width={16}
@@ -90,7 +99,7 @@ const Comments: React.FC<CommentProps>
                 <span className='m-1 text-sm text-gray-600'>123</span>
               </div>
               <div className='flex cursor-pointer'>
-                <Image
+                <ImageKit
                   src='/images/reply.png'
                   alt='Image Do Not Load'
                   width={16}

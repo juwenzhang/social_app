@@ -3,7 +3,9 @@ import Image from 'next/image';
 
 interface PostDescProps {
   children?: React.ReactNode;
-  src?: string;
+  image_src?: string;
+  audio_src?: string;
+  video_src?: string;
   alt?: string;
   title?: string;
   content?: string;
@@ -28,7 +30,9 @@ type WorkerResponse = WorkerSuccessResponse | WorkerErrorResponse;
 const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
   const {
     children,
-    src = '/images/default.jpg',
+    image_src,
+    audio_src,
+    video_src,
     alt = 'Image Do Not Load',
     title = 'Image',
     content = 'Content',
@@ -37,13 +41,31 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
   const [watermarkedSrc, setWatermarkedSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const watermarkText = username as string
-
+  const watermarkText = username as string;
+  console.log(image_src)
   const fullImageUrl = useMemo(() => {
-    return typeof window !== 'undefined' 
-      ? new URL(src, window.location.origin).toString() 
-      : src;
-  }, [src]);
+    if (!image_src && !audio_src && !video_src) {
+      return typeof window !== 'undefined' 
+        ? new URL('/images/default.jpg', window.location.origin).toString() 
+        : '/images/default.jpg';
+    } else {
+      if (image_src) {
+        return typeof window !== 'undefined' 
+          ? new URL(image_src, window.location.origin).toString() 
+          : image_src;
+      }
+      if (audio_src) {
+        return typeof window !== 'undefined' 
+          ? new URL(audio_src, window.location.origin).toString() 
+          : audio_src;
+      }
+      if (video_src) {
+        return typeof window !== 'undefined' 
+          ? new URL(video_src, window.location.origin).toString() 
+          : video_src;
+      }
+    }
+  }, [image_src]);
 
   const handleWorkerMessage = useCallback((event: MessageEvent<WorkerResponse>) => {
     if ('error' in event.data) {
@@ -71,7 +93,7 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
     worker.onerror = handleWorkerError;
 
     const message: WorkerMessage = { 
-      src: fullImageUrl, 
+      src: fullImageUrl as string, 
       watermarkText: `${watermarkText ? watermarkText : ""} @jwz_social_app` 
     };
     worker.postMessage(message);
@@ -105,7 +127,7 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
               className='block w-full h-full rounded-lg overflow-hidden'
             >
               <Image
-                src={watermarkedSrc || src}
+                src={(watermarkedSrc || image_src) as string}
                 alt={alt}
                 fill
                 loading='lazy'

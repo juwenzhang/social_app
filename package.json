@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.20.2",
+    "@imagekit/next": "^2.1.2",
     "@prisma/client": "^6.9.0",
     "cloudinary": "^2.6.1",
     "dotenv": "^16.5.0",

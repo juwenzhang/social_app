@@ -31,9 +31,39 @@ const getAllUsers = async (userId: string) => {
   }
 }
 
+const _getAllUsers = async () => {
+  try {
+    const result = await prisma.user.findMany({
+      include: {
+        _count: {
+          select: {
+            followers: true,
+            following: true,
+            posts: true,
+            likes: true,
+            comments: true,
+            blocks: true, 
+            blocked: true,
+            sentRequests: true,
+            receivedRequests: true,
+            stories: true,
+          }
+        }
+      }
+    })
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function GET() {
   try {
     const { userId } = await auth()
+    if (!userId) {
+      const users = await _getAllUsers();
+    return NextResponse.json(users);
+    }
     const users = await getAllUsers(userId as string);
     return NextResponse.json(users);
   } catch (error) {

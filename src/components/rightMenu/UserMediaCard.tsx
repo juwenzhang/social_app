@@ -18,7 +18,7 @@ const UserMediaCard: React.FC<UserMediaCardProps>
     where: {
       userId: userId,
       image: {
-        not: null
+        not: null 
       }
     },
     take: 8,

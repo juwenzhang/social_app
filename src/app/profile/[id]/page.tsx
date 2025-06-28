@@ -55,7 +55,7 @@ const ProfilePage = async (
 
   return(
     <React.Fragment>
-      <div className='flex gap-6 pt-6'>
+      <div className='flex gap-6 pt-6'> 
         <div className='hidden xl:block w-[20%]'>
           <LeftMenu type='profile' userId={id} />
         </div>
@@ -113,13 +113,14 @@ const ProfilePage = async (
                   </div>
                 </div>
               </div>
-              <Feed user={user.username} />
+              <Feed userId={id} />
             </div>
           </div>
         </Suspense>
         <div className='hidden lg:block w-[30%]'>
           <RightMenu 
             userId={id} 
+            type='profile'
           />
         </div>
       </div>

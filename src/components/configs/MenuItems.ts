@@ -21,7 +21,7 @@ const MenuItems: MenuItemType[] = [
   {
     id: 2,
     title: 'Activities',
-    imageUrl: '/images/Activity.png',
+    imageUrl: '/images/activity.png',
     imageDesc: 'Activities',
     route: '/activities',
     textColor: 'text-amber-500/50',

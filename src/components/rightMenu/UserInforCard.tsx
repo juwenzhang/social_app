@@ -1,22 +1,24 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { Image } from '@imagekit/next';
 import { getUser } from '@/libs/userService';
 import { notFound } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import prisma from '@/libs/client';
 import UserInforCardInteraction from '@/components/rightMenu/userInforCardInteraction';
-import UpdateUser from './updateUser';
+import UpdateUser from '@/components/rightMenu/updateUser';
 
 interface UserInfoCardProps {
   children?: React.ReactNode;
   userId?: string;
+  type: string;
 }
 
 const UserInforCard: React.FC<UserInfoCardProps> 
 = async (props: UserInfoCardProps) => {
   const {
-    userId
+    userId,
+    type
   } = props;
   const user = await getUser(userId!);
   if (!user) return notFound();
@@ -33,7 +35,7 @@ const UserInforCard: React.FC<UserInfoCardProps>
   const { userId: currentUserId } = (await auth());
   let isFollowed = false;
   if (currentUserId) {
-    if (currentUserId!== userId) {
+    if (currentUserId !== userId) {
       const res = await prisma.follower.findFirst({
         where: {
           followerId: currentUserId,
@@ -83,8 +85,8 @@ const UserInforCard: React.FC<UserInfoCardProps>
         {/* top */}
         <div className='flex justify-between items-center font-medium'>
           <span className='font-semibold gradient-text'>User Information</span>
-          {(currentUserId === userId) ? <UpdateUser /> : <Link
-            href={`/user/${userId}`}
+          {(currentUserId === userId) ? <UpdateUser user={user} type={type} /> : <Link
+            href={`/settings/${userId}`}
             className='text-sm gradient-text font-semibold'
           >
             See All

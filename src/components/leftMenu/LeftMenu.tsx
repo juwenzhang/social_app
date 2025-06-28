@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { Image } from '@imagekit/next';
 import Ad from "@/components/Ad";
 import ProfileCard from "@/components/leftMenu/ProfileCard";
 import MenuItems from "@/components/configs/MenuItems";
@@ -11,7 +11,8 @@ interface LeftMenuProps {
   userId?: string
 }
 
-const LeftMenu: React.FC<LeftMenuProps> = (props: LeftMenuProps) => {
+const LeftMenu: React.FC<LeftMenuProps> 
+= async (props: LeftMenuProps) => {
   const { 
     children,
     type = "home",
@@ -29,7 +30,7 @@ const LeftMenu: React.FC<LeftMenuProps> = (props: LeftMenuProps) => {
             return (
               <Link
                 key={item.id}
-                href={item.route}
+                href={item.route === "/settings" ? item.route + "/" + userId : item.route}
                 className={`text-sm font-semibold
                   flex items-center gap-4 
                   hover:bg-gray-300 p-2 rounded-md

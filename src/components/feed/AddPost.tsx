@@ -1,15 +1,19 @@
 import React from "react";
 import Image from "next/image";
+import { Image as ImageKit } from '@imagekit/next';
 import { auth } from '@clerk/nextjs/server'
 import { createPost } from "@/libs/postService";
 
 interface AddPostProps {
   children?: React.ReactNode;
+  userId?: string;
+  user?: any
 }
 
 const AddPost: React.FC<AddPostProps> = (
   props: AddPostProps
 ) => {
+  const { user } = props;
   const textAction = async (
     formData: FormData,
   ) => {
@@ -42,7 +46,12 @@ const AddPost: React.FC<AddPostProps> = (
             overflow-hidden cursor-pointer
             w-10 h-10">
           <Image 
-            src="/images/default.jpg" 
+            src={ 
+              user 
+              ? (user["avatar"] ? user["avatar"] 
+                : "/images/default.jpg") 
+                : "/images/default.jpg"
+            } 
             width={80} 
             height={80} 
             alt="avatar" 
@@ -81,7 +90,7 @@ const AddPost: React.FC<AddPostProps> = (
               placeholder="What's on your mind?"
             />
             <div className="flex gap-4">
-              <Image 
+              <ImageKit 
                 src="/images/emoji.png" 
                 width={24} 
                 height={24} 
@@ -90,7 +99,7 @@ const AddPost: React.FC<AddPostProps> = (
                 className="cursor-pointer object-contain"
               />
               <button type='submit'>
-                <Image
+                <ImageKit
                   src="/images/reply.png"
                   width={24}
                   height={24}
@@ -112,7 +121,7 @@ const AddPost: React.FC<AddPostProps> = (
               flex gap-2 items-center text-blue-800
               hover:text-blue-500 cursor-pointer
             ">
-              <Image 
+              <ImageKit 
                 src="/images/addphoto.png" 
                 width={24} 
                 height={24} 
@@ -126,7 +135,7 @@ const AddPost: React.FC<AddPostProps> = (
               flex gap-2 items-center text-blue-400
               hover:text-blue-800 cursor-pointer
             ">
-              <Image 
+              <ImageKit 
                 src="/images/addvideo.png" 
                 width={24} 
                 height={24} 
@@ -140,7 +149,7 @@ const AddPost: React.FC<AddPostProps> = (
               flex gap-2 items-center text-green-400
               hover:text-green-800 cursor-pointer
             ">
-              <Image 
+              <ImageKit 
                 src="/images/addevent.png" 
                 width={24} 
                 height={24} 
@@ -154,7 +163,7 @@ const AddPost: React.FC<AddPostProps> = (
               flex gap-2 items-center text-purple-400
               hover:text-purple-800 cursor-pointer
             ">
-              <Image 
+              <ImageKit 
                 src="/images/addpoll.png" 
                 width={24} 
                 height={24} 

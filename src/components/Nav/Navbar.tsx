@@ -9,6 +9,7 @@ import linkDatas from '@/components/configs/Navbar';
 import MobileMenu from "@/components/Nav/MobileMenu";
 import PcMenu from '@/components/Nav/PcMenu';
 import Navbarlink from "@/components/Nav/Navbarlink";
+import { Image as ImageKit } from '@imagekit/next';
 
 interface NavbarProps{
   children?: React.ReactNode;
@@ -87,7 +88,7 @@ const Navbar:React.FC<NavbarProps>
                     WEBSITE_LIGHT_THEME.WEBSITE_NAVBAR_COLOR,
                   )} 
                 />
-                <Image 
+                <ImageKit 
                   width={20} 
                   height={20} 
                   src="/images/search.png" 

@@ -25,13 +25,13 @@ const HomePage: React.FC<HomePageProps> = async () => {
         </div>
         <div className='w-full lg:w-[70%] xl:w-[50%]'>
           <div className='flex flex-col gap-4'>
-            <Stories />
-            <AddPost />
-            <Feed user={user?.username} />
+            <Stories userId={userId as string} />
+            <AddPost userId={userId as string} user={user} />
+            <Feed user={user} />
           </div>
         </div>
         <div className='hidden lg:block w-[30%]'>
-          <RightMenu userId={userId as string} />
+          <RightMenu userId={userId as string} type='home' />
         </div>
       </div>
     </React.Fragment>

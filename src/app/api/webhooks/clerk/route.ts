@@ -85,7 +85,11 @@ export async function POST(req: Request) {
   
   if (eventType === "user.updated") {
     try {
-      const { id, username, image_url } = evt.data;
+      const { 
+        id,
+        username, 
+        image_url
+      } = evt.data;
       const res = await updateUser(
         id,
         {

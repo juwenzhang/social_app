@@ -5,8 +5,8 @@ const switchFollow = async (userId: string, currentUserId: string) => {
   try {
     const existingFollow = await prisma.follower.findFirst({
       where: {
-        followerId: currentUserId,
-        followingId: userId,
+        followerId: userId,
+        followingId: currentUserId,
       }
     });
 

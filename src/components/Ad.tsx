@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { Image as ImageKit } from '@imagekit/next';
 import Link from 'next/link';
 
 interface AdProps{
@@ -26,7 +27,7 @@ const Ad: React.FC<AdProps> = (props: AdProps) => {
           <span className='gradient-text font-semibold'>
             AD
           </span>
-          <Image
+          <ImageKit
             src='/images/more.png'
             width={24}
             height={24}
@@ -53,7 +54,7 @@ const Ad: React.FC<AdProps> = (props: AdProps) => {
           `}
         >
           <div>
-            <Image
+            <ImageKit
               src={'/images/favicon.png'}
               fill
               alt='Image'
@@ -98,8 +99,11 @@ const Ad: React.FC<AdProps> = (props: AdProps) => {
             cursor-pointer transition-all duration-300 ease-in-out
             font-semibold
         '>
-          <Link href={`/profile/${userId}`}>
-            Learn More About JuWenZhang
+          <Link 
+            href="https://github.com/juwenzhang"
+            target='_blank' rel='noopener noreferrer'
+          >
+            Learn More About Author
           </Link>
         </button>
         {children}

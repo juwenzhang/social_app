@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { Image as ImageKit } from '@imagekit/next';
 
 interface PostInterItemProps {
   children?: React.ReactNode;
@@ -32,7 +33,7 @@ const PostInterItem: React.FC<PostInterItemProps>
       <div className="flex gap-8">
         <div className="flex items-center gap-4 bg-slate-100 
           rounded-xl px-2 py-1">
-          <Image
+          <ImageKit
             src={src}
             alt={alt}
             width={width}

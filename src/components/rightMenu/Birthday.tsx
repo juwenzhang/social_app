@@ -1,6 +1,8 @@
 import React from'react';
 import Image from 'next/image';
+import { Image as ImageKit } from '@imagekit/next';
 import Link from 'next/link';
+import { getUser } from '@/libs/userService';
 
 interface BirthdayProps{
   children?: React.ReactNode;
@@ -8,8 +10,12 @@ interface BirthdayProps{
 }
 
 const Birthday: React.FC<BirthdayProps>
-= (props: BirthdayProps) => {
+= async (props: BirthdayProps) => {
   const {children, userId} = props;
+  let user
+  if (userId) {
+    user = await getUser(userId)
+  }
   return(
     <React.Fragment>
       <div className='p-2 rounded-md bg-white/50 
@@ -18,7 +24,7 @@ const Birthday: React.FC<BirthdayProps>
         <div className='flex justify-between 
           items-center font-semibold'>
           <span className='gradient-text'>
-            BirthDay
+            Join-Community-Time
           </span>
         </div>
 
@@ -28,14 +34,16 @@ const Birthday: React.FC<BirthdayProps>
           rounded-md shadow-md'>
           <div className='flex items-center gap-2'>
             <Image
-              src='/images/default.jpg'
+              src={user && user["avatar"] as string || '/images/default.jpg'}
               width={32}
               height={32}
               alt='Image'
               loading='lazy'
               className='size-10 object-cover ring-1 rounded-full'
             />
-            <span>JUWENZHANG</span>
+            <span>
+              {user && user["username"]} 
+            </span>
           </div>
           <div className='flex gap-2 items-center justify-center'>
             <button
@@ -46,7 +54,7 @@ const Birthday: React.FC<BirthdayProps>
               cursor-pointer transition-all duration-300 ease-in-out
               '
             >
-              Celebrate
+              welcome
             </button>
           </div>
         </div>
@@ -56,7 +64,7 @@ const Birthday: React.FC<BirthdayProps>
           className='p-4 bg-white/40 rounded-md shadow-md
           flex gap-4 items-center justify-around'
         >
-          <Image
+          <ImageKit
             src='/images/gift.png'
             width={24}
             height={24}
@@ -72,12 +80,12 @@ const Birthday: React.FC<BirthdayProps>
             <span
               className='text-sm gradient-text font-semibold'
             >
-              UpComing Birthday
+              Join-Community-Time
             </span>
             <span
               className='text-sm gradient-text font-semibold'
             >
-              12/12/2024
+              {user && user["createdAt"].toLocaleString()}
             </span>
           </Link>
         </div>

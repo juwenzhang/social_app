@@ -4,6 +4,7 @@ import StoryItem from './StoryItem';
 
 interface StoriesProps{
   children?: React.ReactNode;
+  userId: string
 }
 
 interface StoryItemType {
@@ -29,7 +30,6 @@ const Stories: React.FC<StoriesProps>
           headers: {}
         });
         const data = await _requestFollows.json();
-        console.log(data)
         if (data) {
           setStories(data || []);
         } else {
