@@ -3,11 +3,13 @@ import Image from "next/image";
 import { Image as ImageKit } from '@imagekit/next';
 import { auth } from '@clerk/nextjs/server'
 import { createPost } from "@/libs/postService";
+import { redirect, RedirectType } from 'next/navigation'
 
 interface AddPostProps {
   children?: React.ReactNode;
   userId?: string;
-  user?: any
+  user?: any,
+  type?: string;
 }
 
 const AddPost: React.FC<AddPostProps> = (
@@ -23,8 +25,11 @@ const AddPost: React.FC<AddPostProps> = (
       if (userId) {
         // console.log(userId)
         const desc = formData.get("desc") as string;
-        const result = await createPost(userId, desc);
-        // console.log(result)
+        if (desc.length === 0) {
+          return;
+        }
+        await createPost(userId, desc);
+        window.location.reload();
       } else {
         console.log("user not found")
       }

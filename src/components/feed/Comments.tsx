@@ -11,7 +11,7 @@ const Comments: React.FC<CommentProps>
 = (props: CommentProps) => {
   const {children, user} = props;
   // const { userId } = await auth();
-  console.log(user)
+  // console.log(user)
 
   return(
     <React.Fragment>

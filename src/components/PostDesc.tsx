@@ -1,5 +1,29 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, {
+  useEffect, 
+  useState, 
+  useCallback, 
+  useMemo,  
+} from 'react';
+import Markdown from 'markdown-to-jsx';
 import Image from 'next/image';
+import hljs from 'highlight.js';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import python from 'highlight.js/lib/languages/python';
+import java from 'highlight.js/lib/languages/java';
+import css from 'highlight.js/lib/languages/css';
+import go from 'highlight.js/lib/languages/go';
+import rust from 'highlight.js/lib/languages/rust';
+import dart from 'highlight.js/lib/languages/dart';
+
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('go', go);
+hljs.registerLanguage('rust', rust);
+hljs.registerLanguage('dart', dart);
 
 interface PostDescProps {
   children?: React.ReactNode;
@@ -27,9 +51,23 @@ interface WorkerErrorResponse {
 
 type WorkerResponse = WorkerSuccessResponse | WorkerErrorResponse;
 
+function SyntaxHighlightedCode(props: any) {
+  const ref = React.useRef<HTMLElement|null>(null)
+
+  React.useEffect(() => {
+    if (ref.current && props.className?.includes('lang-')) {
+      hljs.highlightElement(ref.current)
+
+      // hljs won't reprocess the element unless this attribute is removed
+      ref.current.removeAttribute('data-highlighted')
+    }
+  }, [props.className, props.children])
+
+  return <code {...props} ref={ref} />
+}
+
 const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
   const {
-    children,
     image_src,
     audio_src,
     video_src,
@@ -42,7 +80,6 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const watermarkText = username as string;
-  console.log(image_src)
   const fullImageUrl = useMemo(() => {
     if (!image_src && !audio_src && !video_src) {
       return typeof window !== 'undefined' 
@@ -136,10 +173,19 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
             </a>
           )}
         </div>
-        <p className='p-2'>
+        {/* {content} */}
+        <Markdown 
+          className='p-2 bg-white/85 rounded-md shadow-md'
+          options={{ 
+            forceWrapper: true,
+            wrapper: 'article',
+            overrides: {
+              code: SyntaxHighlightedCode,
+            }, 
+          }}
+        >
           {content}
-          {children}
-        </p>
+        </Markdown>
       </div>
     </React.Fragment>
   );

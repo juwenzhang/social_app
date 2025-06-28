@@ -55,7 +55,7 @@ model User {
 // define post table
 model Post {
   id        Int       @id @default(autoincrement())
-  desc      String?
+  desc      String?   @db.Text
   image     String?
   video     String?
   audio     String?

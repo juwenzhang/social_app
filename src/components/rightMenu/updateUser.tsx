@@ -1,6 +1,8 @@
 "use client";
 import { useRouter } from 'next/navigation';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
+import { Image as ImageKit } from '@imagekit/next'
+import Image from 'next/image';
 
 interface UpdateUserType {
   user: any,
@@ -11,19 +13,6 @@ const UpdateUser: React.FC<UpdateUserType> = (props: UpdateUserType) => {
   const { user, type } = props;
   const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<any>({
-    username: user.username,
-    email: user.email,
-    password: '',
-    confirmPassword: '',
-    enterprise: user.enterprise,
-    description: user.description,
-    github_name: user.github_name,
-    juejin_name: user.juejin_name,
-    juejin_link: user.juejin_link,
-  });
-
-  const leftContainerRef = useRef<HTMLDivElement>(null);
 
   const handleClick = async () => {
     setIsOpen(false);
@@ -45,180 +34,142 @@ const UpdateUser: React.FC<UpdateUserType> = (props: UpdateUserType) => {
       </div>
       {
         isOpen && (
-          <div className='fixed bg-black/50 w-screen h-screen top-0 left-0 
-            flex flex-col items-center justify-center gap-2'
-            onClick={() => {
-              setIsOpen(false);
-            }}>
-            <div 
-              className='
-                flex items-center justify-center gap-2
-              '>
+          <div 
+            className='fixed h-screen w-screen top-0 left-0 bg-block/50 
+              flex items-center justify-center z-50'
+          >
+            <form 
+              action=""
+              className='relative p-12 rounded-lg shadow-md flex 
+                flex-col gap-2 w-full md:w-1/2 xl:w-1/3 bg-white/85 justify-center'
+            >
+              <h1 className='font-bold text-xl gradient-text'>Update Profile</h1> 
+              <div className='font-bold mt-3 text-md gradient-text'>
+                Please Use Navbar To Update Your Avatar, Username, Email And Password
+              </div>
+
+              <div className='flex flex-col my-4 w-full'>
+                <label htmlFor="cover" 
+                  className='text-md text-gray-500'>
+                    Cover Picture
+                </label>
+                <div className='flex items-center gap-4 cursor-pointer'>
+                  <Image
+                    src={user?.cover}
+                    width={48}
+                    height={32}
+                    alt='cover'
+                    className='object-cover w-12 rounded-md shadow-md'
+                  />
+                  <span className='text-xs underline text-gray-500'>Change</span>
+                </div>
+              </div>
+
+              <div className='flex flex-wrap justify-between gap-2 xl:gap-4'>
+                <div className='flex flex-col gap-4'>
+                  <label htmlFor="enterprise" className='text-xs text-gray-500 cursor-pointer'>EnterPrise</label>
+                  <input 
+                    type="text" 
+                    placeholder={user.enterprise} 
+                    name='enterprise'
+                    id='enterprise'
+                    className='
+                      border border-gray-500 rounded-md px-2 py-1
+                      focus:outline-none focus:border-blue-500 w-[400px]
+                    '
+                  />
+                </div>
+              </div>
+              <div className='flex flex-wrap justify-between gap-2 xl:gap-4'>
+                <div className='flex flex-col gap-4'>
+                  <label htmlFor="description" className='text-xs text-gray-500 cursor-pointer'>Description</label>
+                  <input 
+                    type="text" 
+                    placeholder={user.description} 
+                    name='description'
+                    id='description'
+                    className='
+                      border border-gray-500 rounded-md px-2 py-1
+                      focus:outline-none focus:border-blue-500 w-[400px]
+                    '
+                  />
+                </div>
+              </div>
+              <div className='flex flex-wrap justify-between gap-2 xl:gap-4'>
+                <div className='flex flex-col gap-4'>
+                  <label htmlFor="github_name" className='text-xs text-gray-500 cursor-pointer'>GitHub Name</label>
+                  <input 
+                    type="text" 
+                    placeholder={user.github_name} 
+                    name='github_name'
+                    id='github_name'
+                    className='
+                      border border-gray-500 rounded-md px-2 py-1
+                      focus:outline-none focus:border-blue-500 w-[400px]
+                    '
+                  />
+                </div>
+              </div>
+              <div className='flex flex-wrap justify-between gap-2 xl:gap-4'>
+                <div className='flex flex-col gap-4'>
+                  <label htmlFor="github_link" className='text-xs text-gray-500 cursor-pointer'>Github Link</label>
+                  <input 
+                    type="text" 
+                    placeholder={user.github_link} 
+                    name='github_link'
+                    id='github_link'
+                    className='
+                      border border-gray-500 rounded-md px-2 py-1
+                      focus:outline-none focus:border-blue-500 w-[400px]
+                    '
+                  />
+                </div>
+              </div>
+              <div className='flex flex-wrap justify-between gap-2 xl:gap-4'>
+                <div className='flex flex-col gap-4'>
+                  <label htmlFor="juejin_name" className='text-xs text-gray-500 cursor-pointer'>Juejin Name</label>
+                  <input 
+                    type="text" 
+                    placeholder={user.juejin_name} 
+                    name='juejin_name'
+                    id='juejin_name'
+                    className='
+                      border border-gray-500 rounded-md px-2 py-1
+                      focus:outline-none focus:border-blue-500 w-[400px]
+                    '
+                  />
+                </div>
+              </div>
+              <div className='flex flex-wrap justify-between gap-2 xl:gap-4'>
+                <div className='flex flex-col gap-4'>
+                  <label htmlFor="juejin_link" className='text-xs text-gray-500 cursor-pointer'>Juejin Link</label>
+                  <input 
+                    type="text" 
+                    placeholder={user.juejin_link} 
+                    name='juejin_link'
+                    id='juejin_link'
+                    className='
+                      border border-gray-500 rounded-md px-2 py-1
+                      focus:outline-none focus:border-blue-500 w-[400px]
+                    '
+                  />
+                </div>
+              </div>
+
               <div 
-                className='bg-white/50 w-[500px] rounded-md p-4 
-                  flex items-center justify-around flex-col gap-3 h-[800px]'
+                className='absolute top-3 right-2 text-2xl cursor-pointer'
                 onClick={(e) => {
                   e.stopPropagation();
-                }}
-                ref={leftContainerRef}>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Username</label>
-                  <input type="text" value={currentUser.username} placeholder={user.username}
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        username: e.target.value,
-                      });
-                    }}
-                  />  
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Email</label>
-                  <input type="text" value={currentUser.email} placeholder={user.email}
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        email: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Password</label>
-                  <input type="password" placeholder='password' value={currentUser.password} 
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        password: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Confirm Password</label>
-                  <input type="password" placeholder='confirm password' value={currentUser.confirmPassword}
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        confirmPassword: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Enterprise</label>
-                  <input type="text" value={currentUser.enterprise} placeholder={user.enterprise}
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        enterprise: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Description</label>
-                  <input type="text" value={currentUser.description} placeholder={user.description}
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        description: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Github Name</label>
-                  <input type="text" value={currentUser.github_name} placeholder={user.github_name}
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        github_name: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Juejin Name</label>
-                  <input type="text" value={currentUser.juejin_name} placeholder={user.juejin_name}
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        juejin_name: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-                <div className='flex flex-col items-center justify-center gap-2 w-[400px]'>
-                  <label className='text-lg font-semibold'>Juejin Link</label>
-                  <input type="text" value={currentUser.juejin_link} placeholder={user.juejin_link}
-                    className='
-                      w-[400px] h-[40px] rounded-md p-2
-                      bg-black/50 text-white
-                    '
-                    onChange={(e) => {
-                      setCurrentUser({
-                        ...currentUser,
-                        juejin_link: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-              <div
-                className='bg-white/50 w-[500px] rounded-md p-4 
-                  flex items-center justify-center flex-col gap-3'
-                style={{
-                  // height: `${leftContainerRef && leftContainerRef.current?.clientHeight}px`
-                  height: '800px'
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
+                  setIsOpen(false);
                 }}>
+                <ImageKit
+                  src={'/images/close.png'}
+                  width={32}
+                  height={32}
+                  alt='close'
+                />
               </div>
-            </div>
-            <div 
-              className='flex flex-col items-center justify-center gap-2 w-[800px]'
-              onClick={handleClick}>
-              <button className='
-                w-[800px] h-[40px] rounded-md p-2
-                bg-black/50 text-white hover:bg-black hover:cursor-pointer
-              '>
-                Update
-              </button>
-            </div>
+            </form>
           </div>
         )
       }
