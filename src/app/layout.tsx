@@ -24,7 +24,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const { userId } = await auth();
+  const { userId } = await auth(); 
 
   return (
     <ClerkProvider>
@@ -39,7 +39,7 @@ export default async function RootLayout({
               {/* background */}
               <div className="absolute">
                 {/* <Background /> */}
-                <StarBackground />
+                {/* <StarBackground /> */}
               </div>
 
               {/* navbar */}

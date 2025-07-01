@@ -175,14 +175,59 @@ const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
         </div>
         {/* {content} */}
         <Markdown 
-          className='p-2 bg-white/85 rounded-md shadow-md'
-          options={{ 
-            forceWrapper: true,
-            wrapper: 'article',
-            overrides: {
-              code: SyntaxHighlightedCode,
-            }, 
-          }}
+            className='p-2 bg-white/85 rounded-md shadow-md  break-all' break-all
+            options={{ 
+              forceWrapper: true,
+              wrapper: 'article',
+              overrides: {
+                code: SyntaxHighlightedCode,
+                a: (
+                   { children, ...props }
+                ) => <a {...props} className='break-all'>{children}</a>,
+                p: (
+                  { children, ...props }
+                ) => <p {...props} className='break-all'>{children}</p>,
+                pre: (
+                  { children, ...props }
+                ) => <pre {...props} className='break-all'>{children}</pre>,
+                h1: (
+                  { children, ...props }
+                ) => <h1 {...props} className='break-all'>{children}</h1>,
+                h2: (
+                  { children, ...props }
+                ) => <h2 {...props} className='break-all'>{children}</h2>,
+                h3: (
+                  { children, ...props }
+                ) => <h3 {...props} className='break-all'>{children}</h3>,
+                h4: (
+                  { children, ...props }
+                ) => <h4 {...props} className='break-all'>{children}</h4>,
+                h5: (
+                  { children, ...props }
+                ) => <h5 {...props} className='break-all'>{children}</h5>,
+                h6: (
+                  { children, ...props }
+                ) => <h6 {...props} className='break-all'>{children}</h6>,
+                blockquote: (
+                  { children, ...props }
+                ) => <blockquote {...props} className='break-all'>{children}</blockquote>,
+                ul: (
+                  { children, ...props }
+                ) => <ul {...props} className='break-all'>{children}</ul>,
+                li: (
+                  { children, ...props }
+                ) => <li {...props} className='break-all'>{children}</li>,
+                img: (
+                  { children, ...props }
+                ) => <img {...props} className='break-all' />,
+                video: (
+                  { children, ...props }
+                ) => <video {...props} className='break-all' />,
+                table: (
+                  { children, ...props }
+                ) => <table {...props} className='break-all'>{children}</table>,
+              }, 
+            }}
         >
           {content}
         </Markdown>

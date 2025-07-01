@@ -9,9 +9,70 @@ body {
   max-width: 100vw;
   overflow: auto;
   overflow-x: hidden;
-  /* background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #ffd1ff); */
   background-size: 400% 400%;
-  /* animation: gradientBackground 15s ease infinite; */
+  animation: switchBgc 30s cubic-bezier(0.3, 0, 0.7, 1) infinite, 
+    bgScale 30s ease-in-out infinite alternate;
+  transition: background-image 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes switchBgc {
+  0% { /* 春季 */
+    background-image: radial-gradient(circle at 10% 30%, #a1ffce 0%, #faffd1 40%, #b5ead7 70%, #ffdac1 100%);
+    background-size: 120% 120%;
+    background-position: 0% 0%;
+  }
+  12.5% { /* 春末夏初 */
+    background-image: radial-gradient(circle at 50% 50%, #a1ffce 0%, #84fab0 25%, #faffd1 45%, #8fd3f4 65%, #ffdac1 100%); opacity: 0.95;
+    background-size: 135% 135%;
+    background-position: 50% 50%;
+  }
+  25% { /* 夏季 */
+    background-image: radial-gradient(ellipse at 90% 70%, #84fab0 0%, #8fd3f4 30%, #a1c4fd 60%, #c2e9fb 100%);
+    background-size: 150% 150%;
+    background-position: 100% 100%;
+  }
+  37.5% { /* 夏末秋初 */
+    background-image: radial-gradient(ellipse at 70% 80%, #84fab0 0%, #ffecd2 35%, #a1c4fd 45%, #fcb69f 75%, #c2e9fb 100%); opacity: 0.98;
+    background-size: 140% 140%;
+    background-position: 80% 80%;
+  }
+  50% { /* 秋季 */
+    background-image: radial-gradient(circle at 50% 50%, #ffecd2 0%, #fcb69f 25%, #ff9a8b 50%, #ffb7b2 75%, #fad0c4 100%);
+    background-size: 130% 130%;
+    background-position: 50% 50%;
+  }
+  62.5% { /* 秋末冬初 */
+    background-image: radial-gradient(circle at 30% 60%, #ffecd2 0%, #e0c3fc 30%, #ff9a8b 40%, #8ec5fc 70%, #fad0c4 100%);
+    background-size: 135% 135%;
+    background-position: 30% 60%;
+  }
+  75% { /* 冬季 */
+    background-image: radial-gradient(ellipse at 30% 60%, #e0c3fc 0%, #8ec5fc 40%, #00dbde 70%, #defdef 100%);
+    background-size: 140% 140%;
+    background-position: 0% 100%;
+  }
+  87.5% { /* 冬末春初 */
+    background-image: radial-gradient(circle at 20% 40%, #e0c3fc 0%, #a1ffce 30%, #8ec5fc 40%, #faffd1 70%, #defdef 100%);
+    background-size: 125% 125%;
+    background-position: 20% 40%;
+  }
+  100% { /* 回到春季 */
+    background-image: radial-gradient(circle at 10% 30%, #a1ffce 0%, #faffd1 40%, #b5ead7 70%, #ffdac1 100%);
+    background-size: 120% 120%;
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes gradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .scrollbar-hide::-webkit-scrollbar {

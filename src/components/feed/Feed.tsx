@@ -18,10 +18,7 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const observerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setPage(1);
-  }, [userId, perPage]);
+  const pageRef = useRef(page); // TODO: fix: useStae ==> useRef, fix auto load more source question
 
   const fetchPosts = useCallback(async (pageNum: number = 1) => {
     if (isLoading || pageNum > totalPages) {
@@ -44,6 +41,7 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
           pageNum === 1 ? data.posts : [...prev, ...data.posts]
         );
         setPage(pageNum);
+        pageRef.current = pageNum; // 更新 ref
         setTotalPages(data.totalPages || 1);
       }
     } catch (err: any) {
@@ -51,7 +49,11 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
     } finally {
       setIsLoading(false);
     }
-  }, [userId, perPage]);
+  }, [userId, perPage, isLoading, totalPages]);
+
+  useEffect(() => {
+    pageRef.current = page;
+  }, [page]);
 
   useEffect(() => {
     fetchPosts(1);
@@ -60,10 +62,9 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
   useEffect(() => {
     if (!observerRef.current) return;
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        console.log(entry.isIntersecting, isLoading, page < totalPages)
-        if (entry.isIntersecting && !isLoading && page < totalPages) {
-          fetchPosts(page + 1);
+      entries.forEach(async entry => {
+        if (entry.isIntersecting && !isLoading && pageRef.current < totalPages) {
+          await fetchPosts(pageRef.current + 1);
         }
       });
     }, {
@@ -72,7 +73,7 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
     });
     observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [fetchPosts, page, totalPages, isLoading]);
+  }, [fetchPosts, totalPages, isLoading]);
 
   return (
     <React.Fragment>
@@ -81,7 +82,7 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
           <div className="p-6 bg-red-50 text-red-600 rounded-lg text-center">
             <p>⚠️ {error}</p>
             <button 
-              onClick={() => fetchPosts(page + 1)}
+              onClick={() => fetchPosts(pageRef.current + 1)}
               className="mt-2 text-blue-600 hover:underline"
             >
               Load More
@@ -98,9 +99,11 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
                   002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800">There is no post yet.</h3>
+            <h3 className="text-xl font-semibold text-gray-800">
+              There is no post.
+            </h3>
             <p className="text-gray-500 max-w-md">
-              Share your first post to see it here.
+              Share Your Posts.
             </p>
           </div>
         ) : (
@@ -116,23 +119,20 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
             <div 
               ref={observerRef} 
               className="py-4 text-center cursor-pointer"
-              onClick={() => {
-                setIsLoading(true);
-                setPage(prev => prev + 1);
-                fetchPosts(page);
-              }}
             >
               {isLoading ? (
                 <LoadingIndicator />
               ) : page < totalPages ? (
                 <button
-                  onClick={() => fetchPosts(page + 1)}
+                  onClick={() => fetchPosts(pageRef.current + 1)}
                   className="mt-2 text-blue-600 hover:underline"
                 >
                   Load More
-                </button>
+                </button> 
               ) : (
-                <p className="text-gray-500">No more posts to load</p>
+                <p className="text-gray-500">
+                  No more posts.
+                </p>
               )}
             </div>
           </>

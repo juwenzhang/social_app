@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Image as ImageKit } from '@imagekit/next';
 import { auth } from '@clerk/nextjs/server'
 import { createPost } from "@/libs/postService";
-import { redirect, RedirectType } from 'next/navigation'
 
 interface AddPostProps {
   children?: React.ReactNode;
@@ -29,7 +28,6 @@ const AddPost: React.FC<AddPostProps> = (
           return;
         }
         await createPost(userId, desc);
-        window.location.reload();
       } else {
         console.log("user not found")
       }

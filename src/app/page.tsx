@@ -28,7 +28,7 @@ const HomePage: React.FC<HomePageProps> = async () => {
             <Stories userId={userId as string} />
             <AddPost userId={userId as string} user={user} />
             <Feed user={user} />
-          </div>
+          </div> 
         </div>
         <div className='hidden lg:block w-[30%]'>
           <RightMenu userId={userId as string} type='home' />

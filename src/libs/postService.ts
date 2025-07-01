@@ -1,4 +1,5 @@
 import prisma from "@/libs/client";
+import { redirect, RedirectType } from 'next/navigation'
 
 export const createPost = async (
   userId: string,
@@ -17,7 +18,7 @@ export const createPost = async (
         desc: desc
       }
     });
-    return result;
+    return redirect(`/profile/${userId}`, RedirectType.push);
   } catch (error) {
     throw error;
   }
