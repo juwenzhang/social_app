@@ -4,8 +4,8 @@ import { redirect, RedirectType } from 'next/navigation'
 export const createPost = async (
   userId: string,
   desc: string,
-  audio?: string,
   image?: string,
+  audio?: string,
   video?: string,
 ) => {
   try {

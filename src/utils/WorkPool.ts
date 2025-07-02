@@ -10,10 +10,17 @@ class WorkPool<T = any, R = any> {
     reject: (reason?: any) => void;
     timeoutId?: NodeJS.Timeout;
   }> = [];
-  private taskResolvers = new Map<number, (value: R | PromiseLike<R>) => void>();
+  private taskResolvers = new Map<
+    number, 
+    (value: R | PromiseLike<R>) => void
+  >();
   private taskTimeout: number;
 
-  constructor(workerUrl: string, poolSize: number = 4, taskTimeout: number = 30000) {
+  constructor(
+    workerUrl: string, 
+    poolSize: number = 4, 
+    taskTimeout: number = 30000
+  ) {
     this.workerUrl = workerUrl;
     this.poolSize = poolSize;
     this.taskTimeout = taskTimeout;
@@ -77,7 +84,9 @@ class WorkPool<T = any, R = any> {
           resolve,
           reject,
           timeoutId: setTimeout(() => {
-            const index = this.waitingTasks.findIndex(t => t.resolve === resolve);
+            const index = this.waitingTasks.findIndex(
+              t => t.resolve === resolve
+            );
             if (index !== -1) {
               this.waitingTasks.splice(index, 1);
               reject(new Error(`Task timed out while waiting in queue`));
@@ -110,7 +119,8 @@ class WorkPool<T = any, R = any> {
         this.releaseWorker(worker);
       }, this.taskTimeout);
       
-      worker.postMessage({ taskId, taskData: nextTask.taskData }, nextTask.transferList);
+      worker.postMessage({ taskId, taskData: nextTask.taskData }, 
+        nextTask.transferList);
       
       this.taskResolvers.set(taskId, (result) => {
         clearTimeout(timeoutId);

@@ -1,5 +1,6 @@
 import prisma from "@/libs/client";
 import { NextResponse, NextRequest } from "next/server";
+import { base64ToString } from "@/utils/transformContent";
 
 interface PaginationParams {
   page: number;
@@ -62,7 +63,10 @@ export async function GET(req: NextRequest) {
     const totalPages = Math.ceil(totalCount / pagination.perPage);
     
     return NextResponse.json({
-      posts,
+      posts: posts.map(post => ({
+        ...post,
+        desc: base64ToString((post as any).desc)
+      })),
       totalPages,
       currentPage: pagination.page,
       perPage: pagination.perPage,

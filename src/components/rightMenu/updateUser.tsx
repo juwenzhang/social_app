@@ -38,13 +38,13 @@ const UpdateUser: React.FC<UpdateUserType> = (props: UpdateUserType) => {
         console.log(data.error);
       } else {
         setIsOpen(false);
-        router.push(`/profile/${user.id}`);
       }
     } catch (error) {
       console.log('提交失败：', error);
     } finally {
       setIsOpen(false);
       setCoverFile(null);
+      router.push(`/profile/${user.id}`);
     }
   };
 

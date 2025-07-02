@@ -26,7 +26,7 @@ const HomePage: React.FC<HomePageProps> = async () => {
         <div className='w-full lg:w-[70%] xl:w-[50%]'>
           <div className='flex flex-col gap-4'>
             <Stories userId={userId as string} />
-            <AddPost userId={userId as string} user={user} />
+            {userId && <AddPost userId={userId as string} user={user} />}
             <Feed user={user} />
           </div> 
         </div>

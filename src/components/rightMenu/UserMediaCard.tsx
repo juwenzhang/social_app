@@ -14,6 +14,14 @@ const UserMediaCard: React.FC<UserMediaCardProps>
   const {
     userId
   } = props;
+  const postNum = await prisma.post.count({
+    where: {
+      userId: userId,
+      image: {
+        not: null 
+      }
+    },
+  })
   const postsWithMedia = await prisma.post.findMany({
     where: {
       userId: userId,
@@ -24,7 +32,7 @@ const UserMediaCard: React.FC<UserMediaCardProps>
     take: 8,
     orderBy: {
       createdAt: 'desc',
-    }
+    },
   })
   const { userId: currentUserId } = (await auth());
   return(
@@ -35,25 +43,31 @@ const UserMediaCard: React.FC<UserMediaCardProps>
         {/* top */}
         <div className='flex justify-between items-center font-medium'>
           <span className='font-semibold gradient-text'>User Media</span>
-          {(currentUserId !== userId) && <Link
-            href={`/user/${userId}`}
+          {postNum > 8 && currentUserId === userId && <Link
+            href={`/image/${userId}`}
             className='text-sm gradient-text font-semibold'
           >
             See All
           </Link>}
         </div>
         {/* bottom */}
-        <div className='flex gap-4 items-start justify-between flex-wrap'>
+        <div className='flex gap-4 items-start justify-start flex-wrap'>
           {postsWithMedia.length ? postsWithMedia.map((post) => {
             return (
               <div className='relative w-1/5 h-24' key={post.id}>
-                <Image
-                  src={ post.image as string }
-                  fill
-                  alt={post.desc as string}
-                  loading='lazy'
-                  className='object-cover rounded-md'
-                />
+                <Link
+                  href={post.image as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    src={ post.image as string }
+                    fill
+                    alt={post.desc as string}
+                    loading='lazy'
+                    className='object-cover rounded-md shadow-md'
+                  />
+                </Link>
               </div>
             )
           }) : (

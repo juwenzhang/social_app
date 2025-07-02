@@ -1,8 +1,9 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
+
 import Image from "next/image";
 import { Image as ImageKit } from '@imagekit/next';
-import { auth } from '@clerk/nextjs/server'
-import { createPost } from "@/libs/postService";
+import { useRouter } from "next/navigation";
 
 interface AddPostProps {
   children?: React.ReactNode;
@@ -15,26 +16,113 @@ const AddPost: React.FC<AddPostProps> = (
   props: AddPostProps
 ) => {
   const { user } = props;
-  const textAction = async (
-    formData: FormData,
-  ) => {
-    "use server";
-    const { userId } = await auth()
+  const router = useRouter();
+
+  const [image, setImage] = useState<File | null>(null);
+  const [video, setVideo] = useState<File | null>(null);
+
+const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  if (e.key === 'Enter' && e.ctrlKey) {
+    e.preventDefault();
+    const form = e.currentTarget.closest('form');
+    if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  } else if (e.key === 'Tab') {
+    e.preventDefault();
+    const start = e.currentTarget.selectionStart;
+    const end = e.currentTarget.selectionEnd;
+    e.currentTarget.value = 
+      e.currentTarget.value.substring(0, start)
+      + '  ' + 
+      e.currentTarget.value.substring(end);
+    e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 2;
+  } else if (e.key === 'Shift') {
+    e.preventDefault();
+    const start = e.currentTarget.selectionStart;
+    const end = e.currentTarget.selectionEnd;
+    e.currentTarget.value = 
+      e.currentTarget.value.substring(0, start)
+      + '  ' + 
+      e.currentTarget.value.substring(end);
+    e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 2;
+  } else if (e.key === "B" && e.ctrlKey) {
+    e.preventDefault();
+    const start = e.currentTarget.selectionStart;
+    const end = e.currentTarget.selectionEnd;
+    e.currentTarget.value = 
+      e.currentTarget.value.substring(0, start)
+      + '**' + 
+      e.currentTarget.value.substring(end);
+    e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 4;
+  } else if (e.key === "1" && e.ctrlKey) {
+    e.preventDefault();
+    const start = e.currentTarget.selectionStart;
+    const end = e.currentTarget.selectionEnd;
+    e.currentTarget.value = 
+      e.currentTarget.value.substring(0, start)
+      + '# ' + 
+      e.currentTarget.value.substring(end);
+    e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 4;
+  } else if (e.key === "2" && e.ctrlKey) {
+    e.preventDefault();
+    const start = e.currentTarget.selectionStart;
+    const end = e.currentTarget.selectionEnd;
+    e.currentTarget.value = 
+      e.currentTarget.value.substring(0, start)
+      + '## ' + 
+      e.currentTarget.value.substring(end);
+    e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 4;
+  } else if (e.key === "3" && e.ctrlKey) {
+    e.preventDefault();
+    const start = e.currentTarget.selectionStart;
+    const end = e.currentTarget.selectionEnd;
+    e.currentTarget.value = 
+      e.currentTarget.value.substring(0, start)
+      + '### ' + 
+      e.currentTarget.value.substring(end);
+    e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 4;
+  }
+};
+
+const textAction = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const content = formData.get('desc') as string;
+    if (content.length === 0) {
+      return;
+    }
+    if (image) {
+      formData.append('image', image);
+    }
+    if (video) {
+      formData.append('video', video);
+    }
     try {
-      if (userId) {
-        // console.log(userId)
-        const desc = formData.get("desc") as string;
-        if (desc.length === 0) {
-          return;
-        }
-        await createPost(userId, desc);
-      } else {
-        console.log("user not found")
-      }
+      const res = await fetch(`/api/post/create`, {
+        method: 'POST',
+        body: formData, 
+      });
+      const data = await res.json();
+      if (data.error) {
+        console.log(data.error);
+      } 
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message) 
-      }
+      console.log('提交失败：', error);
+    } finally {
+      router.push(`/profile/${user.id}`);
+    }
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+    }
+  }
+
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setVideo(file);
     }
   }
 
@@ -67,7 +155,7 @@ const AddPost: React.FC<AddPostProps> = (
         <div className="flex-1">
           {/*text input  */}
           <form 
-            action={textAction} 
+            onSubmit={textAction}
             className="p-1 flex gap-4 items-center justify-start"
           >
             <textarea 
@@ -91,6 +179,7 @@ const AddPost: React.FC<AddPostProps> = (
               "
               style={{ backgroundColor: '#f3f4f6', color: '#374151' }}
               placeholder="What's on your mind?"
+              onKeyDown={handleKeyDown}
             />
             <div className="flex gap-4">
               <ImageKit 
@@ -123,7 +212,13 @@ const AddPost: React.FC<AddPostProps> = (
             <div className="
               flex gap-2 items-center text-blue-800
               hover:text-blue-500 cursor-pointer
-            ">
+            "
+            onClick={() => {
+              const fileInput = document.getElementById('image');
+              if (fileInput) {
+                fileInput.click();
+              }
+            }}>
               <ImageKit 
                 src="/images/addphoto.png" 
                 width={24} 
@@ -132,12 +227,25 @@ const AddPost: React.FC<AddPostProps> = (
                 loading="lazy"
                 className="cursor-pointer object-contain"
               />
+              <input
+                type="file"
+                id="image"
+                name="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
               AddPhoto~😘
             </div>
             <div className="
               flex gap-2 items-center text-blue-400
               hover:text-blue-800 cursor-pointer
-            ">
+            "
+            onClick={() => {
+              const fileInput = document.getElementById('video');
+              if (fileInput) {
+                fileInput.click();
+              }
+            }}>
               <ImageKit 
                 src="/images/addvideo.png" 
                 width={24} 
@@ -145,6 +253,14 @@ const AddPost: React.FC<AddPostProps> = (
                 alt="emoji"
                 loading="lazy"
                 className="cursor-pointer object-contain"
+              />
+              <input 
+                type="file" 
+                id="video"
+                accept="video/*"
+                onChange={handleVideoChange}
+                className="hidden"
+                name="video/*" 
               />
               AddVideo~😉
             </div>

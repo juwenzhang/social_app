@@ -39,11 +39,11 @@ export async function POST(req: Request) {
   }
 
   try {
-    const updatedUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id },
       data: updateData,
     });
-    return NextResponse.redirect(new URL(`/profile/${updatedUser.id}`, req.url), 302);
+    return new NextResponse(JSON.stringify({ message: '用户信息更新成功' }), { status: 200 });
   } catch (error) {
     console.error('用户信息更新失败：', error);
     return new NextResponse(JSON.stringify({ error: '用户信息更新失败' }), { status: 500 });
