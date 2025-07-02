@@ -1,22 +1,31 @@
-# 0.1.0 (2025-06-17)
+# 0.1.0 (2025-07-02)
 
 
 ### Bug Fixes
 
+* changelog bug ([bcc3938](https://github.com/juwenzhang/social_app/commit/bcc3938901e5ee32f09b1cb50a7cc543c96181fd))
+* changelog bug * 2 ([47f952b](https://github.com/juwenzhang/social_app/commit/47f952bf7c45bbcd1591ca097d6a973a14c52948))
+* changelog bug * 3 ([855ba98](https://github.com/juwenzhang/social_app/commit/855ba9894b56a35ef7d17dc8fae5ff129555c4ed))
 * fix changelog bug ([ee1573c](https://github.com/juwenzhang/social_app/commit/ee1573cc4ebe0a88932aa6c1054cb91f533bc683))
 * fix changelog bug ([f546bc7](https://github.com/juwenzhang/social_app/commit/f546bc7d7698d5f2cd3241602d8e202b608c5e1a))
+* fix changelog bug, find some question ([97f6bce](https://github.com/juwenzhang/social_app/commit/97f6bcefa86aa24e75dba1e734504be11efd6508))
+* update post.desc,type and realise post render when much data ([59f55e4](https://github.com/juwenzhang/social_app/commit/59f55e40ea72c0c60fb304a2dc82dbec646e712b))
 * update some type error and add some api ([8a14a50](https://github.com/juwenzhang/social_app/commit/8a14a50731663b46bbfe4cdefe2a842b0af5fc47))
 
 
 ### Features
 
+* 核心功能已经完善，后续进行更新以及添加新内容即可 ([0463a24](https://github.com/juwenzhang/social_app/commit/0463a24af0a20d5fc198539152dd2a3b2b350ba4))
 * add api code ([78d8c0a](https://github.com/juwenzhang/social_app/commit/78d8c0a1e7b7ccdb470a9263c3488fffeb422f00))
 * add changelog and add some new api-back ([7db9368](https://github.com/juwenzhang/social_app/commit/7db9368982e2590c41467886429778824c4c0b09))
 * add database design and write some bug ([bb7cf35](https://github.com/juwenzhang/social_app/commit/bb7cf35d79378b9e8b0fd08d2c3f27b0f08dca0a))
 * add image process utils and complete HomePage ([586042a](https://github.com/juwenzhang/social_app/commit/586042a08fc0faa5e727238c3e0c578a008a2af1))
+* add new func ([ec653bb](https://github.com/juwenzhang/social_app/commit/ec653bbf63b7acaaed255bc259e5e1d501b8cb0f))
+* add new spi interface ([c8ede65](https://github.com/juwenzhang/social_app/commit/c8ede65f0d36e061904094bff4b77d3c155e2631))
 * add webworker to improve source load ([438062f](https://github.com/juwenzhang/social_app/commit/438062ff6df943f6dbb404a377f1f72f3fbc0db8))
 * complete home skeleon and add background ([f2f66a5](https://github.com/juwenzhang/social_app/commit/f2f66a548303c2755e3111c3ee16015359c3a108))
 * refactor: rebuild dict and add some api ([b79044c](https://github.com/juwenzhang/social_app/commit/b79044cd061dd8ea308379ed0714111b150cfa98))
+* **updateUser:** add imagekit into project and update updateuser component ([d053029](https://github.com/juwenzhang/social_app/commit/d053029d19e9d624bf0941f00fdc7b6a3a061224))
 
 
 
