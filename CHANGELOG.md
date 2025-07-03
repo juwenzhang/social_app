@@ -20,6 +20,7 @@
 * add changelog and add some new api-back ([7db9368](https://github.com/juwenzhang/social_app/commit/7db9368982e2590c41467886429778824c4c0b09))
 * add database design and write some bug ([bb7cf35](https://github.com/juwenzhang/social_app/commit/bb7cf35d79378b9e8b0fd08d2c3f27b0f08dca0a))
 * add image process utils and complete HomePage ([586042a](https://github.com/juwenzhang/social_app/commit/586042a08fc0faa5e727238c3e0c578a008a2af1))
+* add more core api and func ([177e737](https://github.com/juwenzhang/social_app/commit/177e737bd8d77069ecf4d6d99e1e4c08e9dd8273))
 * add new func ([ec653bb](https://github.com/juwenzhang/social_app/commit/ec653bbf63b7acaaed255bc259e5e1d501b8cb0f))
 * add new spi interface ([c8ede65](https://github.com/juwenzhang/social_app/commit/c8ede65f0d36e061904094bff4b77d3c155e2631))
 * add webworker to improve source load ([438062f](https://github.com/juwenzhang/social_app/commit/438062ff6df943f6dbb404a377f1f72f3fbc0db8))
