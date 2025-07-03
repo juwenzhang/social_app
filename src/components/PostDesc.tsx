@@ -1,12 +1,8 @@
-import React, {
-  useEffect, 
-  useState, 
-  useCallback, 
-  useMemo,  
-} from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Markdown from 'markdown-to-jsx';
 import Image from 'next/image';
 import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.css';
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
 import python from 'highlight.js/lib/languages/python';
@@ -25,214 +21,226 @@ hljs.registerLanguage('go', go);
 hljs.registerLanguage('rust', rust);
 hljs.registerLanguage('dart', dart);
 
-interface PostDescProps {
-  children?: React.ReactNode;
-  image_src?: string;
-  audio_src?: string;
-  video_src?: string;
-  alt?: string;
-  title?: string;
-  content?: string;
-  username?: string;
+interface PostProps {
+  username: string;
+  avatarUrl: string;
+  desc: string;
+  fileUrls: string;
+  fileTypes: string;
+  createdAt?: string;
+  likesCount?: number;
+  commentsCount?: number;
+  onLike?: () => void;
+  onComment?: () => void;
+  isLiked?: boolean;
 }
-
-interface WorkerMessage {
-  src: string;
-  watermarkText: string;
-}
-
-interface WorkerSuccessResponse {
-  data: Blob;
-}
-
-interface WorkerErrorResponse {
-  error: string;
-}
-
-type WorkerResponse = WorkerSuccessResponse | WorkerErrorResponse;
 
 function SyntaxHighlightedCode(props: any) {
-  const ref = React.useRef<HTMLElement|null>(null)
+  const ref = React.useRef<HTMLElement | null>(null);
 
   React.useEffect(() => {
     if (ref.current && props.className?.includes('lang-')) {
-      hljs.highlightElement(ref.current)
-
-      // hljs won't reprocess the element unless this attribute is removed
-      ref.current.removeAttribute('data-highlighted')
+      hljs.highlightElement(ref.current);
+      ref.current.removeAttribute('data-highlighted');
     }
-  }, [props.className, props.children])
+  }, [props.className, props.children]);
 
-  return <code {...props} ref={ref} />
+  return <code {...props} ref={ref} />;
 }
 
-const PostDesc: React.FC<PostDescProps> = (props: PostDescProps) => {
-  const {
-    image_src,
-    audio_src,
-    video_src,
-    alt = 'Image Do Not Load',
-    title = 'Image',
-    content = 'Content',
-    username
-  } = props;
-  const [watermarkedSrc, setWatermarkedSrc] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const watermarkText = username as string;
-  const fullImageUrl = useMemo(() => {
-    if (!image_src && !audio_src && !video_src) {
-      return typeof window !== 'undefined' 
-        ? new URL('/images/default.jpg', window.location.origin).toString() 
-        : '/images/default.jpg';
-    } else {
-      if (image_src) {
-        return typeof window !== 'undefined' 
-          ? new URL(image_src, window.location.origin).toString() 
-          : image_src;
-      }
-      if (audio_src) {
-        return typeof window !== 'undefined' 
-          ? new URL(audio_src, window.location.origin).toString() 
-          : audio_src;
-      }
-      if (video_src) {
-        return typeof window !== 'undefined' 
-          ? new URL(video_src, window.location.origin).toString() 
-          : video_src;
-      }
-    }
-  }, [image_src]);
-
-  const handleWorkerMessage = useCallback((event: MessageEvent<WorkerResponse>) => {
-    if ('error' in event.data) {
-      setError(new Error(event.data.error));
-      setIsLoading(false);
-    } else {
-      const url = URL.createObjectURL(event.data.data);
-      setWatermarkedSrc(url);
-      setIsLoading(false);
-    }
-  }, []);
-
-  const handleWorkerError = useCallback((errorEvent: ErrorEvent) => {
-    setError(new Error(`Web Worker 出错: ${errorEvent.message}`));
-    setIsLoading(false);
-  }, []);
+const PostDesc: React.FC<PostProps> = ({
+                                            username,
+                                            avatarUrl,
+                                            desc,
+                                            fileUrls,
+                                            fileTypes,
+                                            createdAt,
+                                          }) => {
+  const [mediaItems, setMediaItems] = useState<{ url: string; type: string }[]>([]);
+  const [loadingMedia, setLoadingMedia] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-    const worker = new Worker(
-      new URL('../webworkers/imageProcessing.worker.ts', import.meta.url),
-    );
-
-    worker.onmessage = handleWorkerMessage;
-    worker.onerror = handleWorkerError;
-
-    const message: WorkerMessage = { 
-      src: fullImageUrl as string, 
-      watermarkText: `${watermarkText ? watermarkText : ""} @jwz_social_app` 
-    };
-    worker.postMessage(message);
-    return () => {
-      isMounted = false;
-      worker.terminate();
-      if (watermarkedSrc) {
-        URL.revokeObjectURL(watermarkedSrc);
+    try {
+      if (!fileUrls) {
+        setMediaItems([]);
+        setLoadingMedia(false);
+        return;
       }
-    };
-  }, [fullImageUrl, watermarkText, handleWorkerMessage, handleWorkerError]);
 
-  if (error) {
-    return <div>加载图片时出错: {error.message}</div>;
-  }
+      const urls = fileUrls.split(';').filter(Boolean);
+      const types = fileTypes.split(';').filter(Boolean);
+
+      const items = urls.map((url, index) => ({
+        url,
+        type: types[index] || 'unknown'
+      }));
+
+      setMediaItems(items);
+      setLoadingMedia(false);
+    } catch (err: any) {
+      console.error(err);
+      setError('解析媒体文件时出错');
+      setLoadingMedia(false);
+    }
+  }, [fileUrls, fileTypes]);
+
+  const formattedDate = useMemo(() => {
+    if (!createdAt) return '';
+    return new Date(createdAt).toLocaleDateString('en', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }, [createdAt]);
+
+  const renderMediaItems = () => {
+    if (loadingMedia) {
+      return <div className="p-4 text-center text-gray-500">uploading media...</div>;
+    }
+
+    if (error) {
+      return <div className="p-4 text-center text-red-500">{error}</div>;
+    }
+
+    if (mediaItems.length === 0) {
+      return null;
+    }
+
+    if (mediaItems.length === 1) {
+      const item = mediaItems[0];
+      return renderSingleMediaItem(item);
+    }
+
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 mt-3 rounded-lg overflow-hidden">
+        {mediaItems.map((item, index) => (
+          <div key={index} className="aspect-square relative overflow-hidden">
+            {renderMediaItemThumbnail(item)}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderSingleMediaItem = (item: { url: string; type: string }) => {
+    if (item.type.startsWith('image/')) {
+      return (
+        <div className="mt-3 rounded-lg overflow-hidden">
+          <Image
+            src={item.url}
+            alt={`${username}发布的图片`}
+            fill
+            className="object-cover"
+            loading="lazy"
+          />
+        </div>
+      );
+    }
+
+    if (item.type.startsWith('video/')) {
+      return (
+        <div className="mt-3 rounded-lg overflow-hidden">
+          <video controls className="w-full h-auto">
+            <source src={item.url} type={item.type} />
+            您的浏览器不支持视频播放
+          </video>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mt-3 p-4 bg-gray-100 rounded-lg">
+        <p className="text-gray-600">不支持的媒体类型: {item.type}</p>
+        <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-blue-500">
+          下载文件
+        </a>
+      </div>
+    );
+  };
+
+  const renderMediaItemThumbnail = (item: { url: string; type: string }) => {
+    if (item.type.startsWith('image/')) {
+      return (
+        <Image
+          src={item.url}
+          alt={`${username}发布的图片`}
+          fill
+          className="object-cover cursor-pointer hover:opacity-90 transition-opacity"
+          loading="lazy"
+        />
+      );
+    }
+
+    if (item.type.startsWith('video/')) {
+      return (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+          <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <Image
+            src={item.url}
+            alt={`${username}发布的视频`}
+            fill
+            className="object-cover opacity-50"
+            loading="lazy"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+        <p className="text-xs text-gray-500 text-center px-2">不支持的类型</p>
+      </div>
+    );
+  };
 
   return (
-    <React.Fragment>
-      <div className='flex flex-col gap-2 mt-2'>
-        <div className='w-full min-h-96 relative'>
-          {isLoading ? (
-            <div className="loading-container-local">
-              <div className="loading-spinner-local"></div>
-              <p className="loading-text-local">Loading……</p>
-            </div>
-          ) : (
-            <a
-              href={watermarkedSrc || '#'}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='block w-full h-full rounded-lg overflow-hidden'
-            >
-              <Image
-                src={(watermarkedSrc || image_src) as string}
-                alt={alt}
-                fill
-                loading='lazy'
-                className='w-full h-full object-cover rounded-lg shadow-md'
-              />
-            </a>
-          )}
+    <div className="bg-white/50 rounded-xl shadow-md overflow-hidden mb-6">
+      <div className="p-4 flex items-center">
+        <Image
+          src={avatarUrl}
+          alt={username}
+          width={40}
+          height={40}
+          className="rounded-full mr-3"
+        />
+        <div>
+          <h3 className="font-semibold text-gray-800 gradient-text">{username}</h3>
+          <p className="text-xs text-gray-500">{formattedDate}</p>
         </div>
-        {/* {content} */}
-        <Markdown 
-            className='p-2 bg-white/85 rounded-md shadow-md  break-all' break-all
-            options={{ 
-              forceWrapper: true,
-              wrapper: 'article',
+      </div>
+
+      <div className="p-4">
+        <div className="mb-3">
+          <Markdown
+            options={{
               overrides: {
                 code: SyntaxHighlightedCode,
-                a: (
-                   { children, ...props }
-                ) => <a {...props} className='break-all'>{children}</a>,
-                p: (
-                  { children, ...props }
-                ) => <p {...props} className='break-all'>{children}</p>,
-                pre: (
-                  { children, ...props }
-                ) => <pre {...props} className='break-all'>{children}</pre>,
-                h1: (
-                  { children, ...props }
-                ) => <h1 {...props} className='break-all'>{children}</h1>,
-                h2: (
-                  { children, ...props }
-                ) => <h2 {...props} className='break-all'>{children}</h2>,
-                h3: (
-                  { children, ...props }
-                ) => <h3 {...props} className='break-all'>{children}</h3>,
-                h4: (
-                  { children, ...props }
-                ) => <h4 {...props} className='break-all'>{children}</h4>,
-                h5: (
-                  { children, ...props }
-                ) => <h5 {...props} className='break-all'>{children}</h5>,
-                h6: (
-                  { children, ...props }
-                ) => <h6 {...props} className='break-all'>{children}</h6>,
-                blockquote: (
-                  { children, ...props }
-                ) => <blockquote {...props} className='break-all'>{children}</blockquote>,
-                ul: (
-                  { children, ...props }
-                ) => <ul {...props} className='break-all'>{children}</ul>,
-                li: (
-                  { children, ...props }
-                ) => <li {...props} className='break-all'>{children}</li>,
-                img: (
-                  { children, ...props }
-                ) => <img {...props} className='break-all' />,
-                video: (
-                  { children, ...props }
-                ) => <video {...props} className='break-all' />,
-                table: (
-                  { children, ...props }
-                ) => <table {...props} className='break-all'>{children}</table>,
-              }, 
+                a: ({ children, ...props }) => (
+                  <a {...props} className="text-blue-600 hover:underline break-all">
+                    {children}
+                  </a>
+                ),
+                pre: ({ children, ...props }) => (
+                  <pre {...props} className="bg-gray-800 text-white p-3 rounded-md overflow-x-auto break-all">
+                    {children}
+                  </pre>
+                )
+              }
             }}
-        >
-          {content}
-        </Markdown>
+          >
+            {desc}
+          </Markdown>
+        </div>
+
+        {renderMediaItems()}
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 

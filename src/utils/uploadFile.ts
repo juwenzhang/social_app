@@ -1,11 +1,14 @@
-import { v4 as uuidv4 } from 'uuid';
-
-export async function UploadSingleLargeFileToServer(file: File, folder: string) {
-  const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunk size
+export async function UploadSingleLargeFileToServer(
+  file: File,
+  folder: string,
+  onProgress: (progress: number) => void,
+  fileId: string
+) {
+  const CHUNK_SIZE = 5 * 1024 * 1024;
   const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-  const fileId = uuidv4(); // Generate unique file ID
 
-  // Upload chunks
+  onProgress(0); // 初始化进度
+
   for (let i = 0; i < totalChunks; i++) {
     const start = i * CHUNK_SIZE;
     const end = Math.min(start + CHUNK_SIZE, file.size);
@@ -27,20 +30,27 @@ export async function UploadSingleLargeFileToServer(file: File, folder: string) 
     if (!response.ok) {
       throw new Error(`Failed to upload chunk ${i}: ${await response.text()}`);
     }
+
+    // 更新进度
+    const progress = Math.round(((i + 1) / totalChunks) * 100);
+    onProgress(progress);
   }
 
-  // Notify server to complete upload
   const completeResponse = await fetch('/api/upload/complete', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ fileId, fileName: file.name, folder }),
+    body: JSON.stringify({
+      fileId,
+      fileName: file.name,
+      folder,
+    }),
   });
 
   if (!completeResponse.ok) {
     throw new Error(`Failed to complete upload: ${await completeResponse.text()}`);
   }
 
-  return completeResponse.json();
+  return await completeResponse.json();
 }

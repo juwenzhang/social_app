@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Image as ImageKit } from '@imagekit/next';
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
+import { UploadSingleLargeFileToServer } from '@/utils/uploadFile';
 
 interface AddPostProps {
   children?: React.ReactNode;
@@ -12,75 +13,111 @@ interface AddPostProps {
   type?: string;
 }
 
+interface UploadedFile {
+  url: string;
+  type: string;
+  progress: number;
+  isUploading: boolean;
+  error?: string;
+  file: File;
+  fileId: string;
+}
+
 const AddPost: React.FC<AddPostProps> = (props) => {
   const { user } = props;
   const router = useRouter();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  const [files, setFiles] = useState<File[]>([]);
+  const [textValue, setTextValue] = useState('');
+  const [uploadFiles, setUploadFiles] = useState<UploadedFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<{ url: string, type: string }[]>([]);
-  const [chunkUploading, setChunkUploading] = useState<boolean[]>([]); // 分块上传状态
 
-  // 键盘快捷键处理
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Ctrl+Enter 提交评论
     if (e.key === 'Enter' && e.ctrlKey) {
       e.preventDefault();
       const form = e.currentTarget.closest('form');
       if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      return;
     }
-  }, []);
+
+    // 单独Enter键插入换行
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const start = textAreaRef.current?.selectionStart || 0;
+      const end = textAreaRef.current?.selectionEnd || 0;
+
+      // 插入换行符
+      setTextValue(prev =>
+        prev.substring(0, start) + '\n' + prev.substring(end)
+      );
+
+      // 移动光标到换行后
+      setTimeout(() => {
+        if (textAreaRef.current) {
+          textAreaRef.current.selectionStart = start + 1;
+          textAreaRef.current.selectionEnd = start + 1;
+        }
+      }, 0);
+      return;
+    }
+
+    // 支持Tab键缩进
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = textAreaRef.current?.selectionStart || 0;
+      const end = textAreaRef.current?.selectionEnd || 0;
+
+      // 插入Tab字符
+      setTextValue(prev =>
+        prev.substring(0, start) + '  ' + prev.substring(end)
+      );
+
+      // 移动光标到Tab后
+      setTimeout(() => {
+        if (textAreaRef.current) {
+          textAreaRef.current.selectionStart = start + 2;
+          textAreaRef.current.selectionEnd = start + 2;
+        }
+      }, 0);
+      return;
+    }
+  }, [setTextValue]);
 
   const textAction = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage(null);
-    setUploadProgress(files.map(() => 0));
-    setUploadedFiles([]);
-    setChunkUploading(files.map(() => false));
 
     try {
       const formData = new FormData(e.currentTarget);
       const content = formData.get('desc') as string;
 
-      if (!content.trim() && files.length === 0) {
+      if (!content.trim() && uploadFiles.length === 0) {
         setErrorMessage("内容和文件至少填一项");
         setIsLoading(false);
         return;
       }
 
-      const largeFiles = files.filter(file => file.size > 100 * 1024 * 1024);
+      const largeFiles = uploadFiles.filter(file => file.file.size > 100 * 1024 * 1024);
       if (largeFiles.length > 0) {
-        setErrorMessage(`文件大小超出限制：${largeFiles[0].name}（最大支持100MB）`);
+        setErrorMessage(`文件大小超出限制：${largeFiles[0].file.name}（最大支持100MB）`);
         setIsLoading(false);
         return;
       }
 
-      const uploadPromises = files.map(async (file, index) => {
-        setChunkUploading(prev => prev.map((_, i) => i === index ? true : prev[i]));
+      const validFiles = uploadFiles.filter(file => !file.error);
 
-        try {
-          const result = await uploadFileWithChunks(file, (progress: number) => {
-            setUploadProgress(prev => prev.map((p, i) => i === index ? progress : p));
-          });
+      const pendingFiles = validFiles.filter(file => file.isUploading || file.progress < 100);
+      if (pendingFiles.length > 0) {
+        throw new Error("请等待所有文件上传完成");
+      }
 
-          setChunkUploading(prev => prev.map((_, i) => i === index ? false : prev[i]));
-          return result;
-        } catch (err) {
-          setChunkUploading(prev => prev.map((_, i) => i === index ? false : prev[i]));
-          throw err;
-        }
+      validFiles.forEach((file, index) => {
+        formData.append(`fileUrl_${index}`, file.url);
+        formData.append(`fileType_${index}`, file.type);
       });
-
-      const uploaded = await Promise.all(uploadPromises);
-      setUploadedFiles(uploaded);
-
-      files.forEach((file, index) => {
-        formData.append(`file_${index}`, file);
-      });
-      formData.append('fileCount', files.length.toString());
+      formData.append('fileCount', validFiles.length.toString());
 
       const res = await fetch(`/api/post/create`, {
         method: 'POST',
@@ -94,7 +131,6 @@ const AddPost: React.FC<AddPostProps> = (props) => {
 
       toast.success('发布成功', { position: 'top-right' });
       router.push(`/profile/${user.id}`);
-
     } catch (error: any) {
       setErrorMessage(error.message || "提交失败：网络错误");
       toast.error(error.message || "提交失败，请重试", { position: 'top-right' });
@@ -103,130 +139,183 @@ const AddPost: React.FC<AddPostProps> = (props) => {
     }
   };
 
-  const uploadFileWithChunks = (file: File, onProgress: (progress: number) => void): Promise<{ url: string, type: string }> => {
-    return new Promise((resolve) => {
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress = Math.min(progress + 3, 100);
-        onProgress(progress);
+  const uploadFileWithChunks = async (file: File, index: number, fileId: string) => {
+    setUploadFiles(prev =>
+      prev.map((f, i) => i === index ? { ...f, isUploading: true, fileId } : f)
+    );
 
-        if (progress === 100) {
-          clearInterval(interval);
-          resolve({
-            url: `https://example.com/${file.name}`,
-            type: file.type
-          });
-        }
-      }, 100);
-    });
+    try {
+      const result = await UploadSingleLargeFileToServer(file, 'social_app', (progress: number) => {
+        setUploadFiles(prev =>
+          prev.map((f, i) => i === index ? { ...f, progress } : f)
+        );
+      }, fileId);
+
+      // console.log(result);
+      if (!result || !result.url) {
+        throw new Error("上传文件到服务器时出错");
+      }
+
+      setUploadFiles(prev =>
+        prev.map((f, i) => i === index ? {
+          ...f,
+          url: result.url,
+          isUploading: false,
+          progress: 100
+        } : f)
+      );
+
+      return {
+        url: result.secure_url,
+        type: file.type
+      };
+    } catch (error: any) {
+      setUploadFiles(prev =>
+        prev.map((f, i) => i === index ? {
+          ...f,
+          isUploading: false,
+          error: error.message || "上传失败"
+        } : f)
+      );
+      throw error;
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
 
-    const uniqueFiles = selectedFiles.filter(file =>
-      !files.some(existFile => existFile.name === file.name)
-    );
+    if (selectedFiles.length === 0) return;
 
-    if (files.length + uniqueFiles.length > 10) {
-      setErrorMessage("最多只能上传10个文件");
+    if (uploadFiles.length + selectedFiles.length > 32) {
+      setErrorMessage("最多只能上传32个文件");
       return;
     }
 
-    const largeFiles = uniqueFiles.filter(file => file.size > 100 * 1024 * 1024);
+    const largeFiles = selectedFiles.filter(file => file.size > 100 * 1024 * 1024);
     if (largeFiles.length > 0) {
       setErrorMessage(`文件大小超出限制：${largeFiles[0].name}（最大支持100MB）`);
       return;
     }
 
-    setFiles(prevFiles => [...prevFiles, ...uniqueFiles]);
+    const newFiles = selectedFiles.map(file => ({
+      url: '',
+      type: file.type,
+      progress: 0,
+      isUploading: false,
+      error: undefined,
+      file,
+      fileId: crypto.randomUUID()
+    }));
+
+    const baseIndex = uploadFiles.length;
+    setUploadFiles(prev => [...prev, ...newFiles]);
+
+    newFiles.forEach((file, index) => {
+      const fileIndex = baseIndex + index;
+      uploadFileWithChunks(file.file, fileIndex, file.fileId);
+    });
   };
 
   const removeFile = (index: number) => {
-    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
-    setUploadProgress(prev => prev.filter((_, i) => i !== index));
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
-    setChunkUploading(prev => prev.filter((_, i) => i !== index));
+    setUploadFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const renderFilePreviews = () => {
-    if (files.length === 0) return null;
+    if (uploadFiles.length === 0) return null;
 
     return (
       <div className="mt-3 space-y-3">
-        {files.map((file, index) => {
+        {uploadFiles.map((file, index) => {
           const isImage = file.type.startsWith('image/');
-          const progress = uploadProgress[index] || 0;
-          const isUploading = chunkUploading[index];
-          const isUploaded = uploadedFiles[index]?.url;
+          const isVideo = file.type.startsWith('video/');
+          const isUploaded = file.url && file.progress === 100;
+          const showProgress = file.isUploading || (file.progress > 0 && file.progress < 100);
 
           return (
             <div key={index} className="bg-gray-50 p-3 rounded-lg flex flex-col md:flex-row items-start
-              md:items-center gap-3">
+              md:items-center gap-3 transition-all duration-300">
               <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden
-                bg-gray-200 flex items-center justify-center">
-                {isImage && !isUploaded && (
+                bg-gray-200 flex items-center justify-center relative">
+                {isImage && (
                   <Image
-                    src={URL.createObjectURL(file)}
+                    src={isUploaded ? file.url : URL.createObjectURL(file.file)}
                     width={64}
                     height={64}
-                    alt={file.name}
+                    alt={file.file.name}
                     className="object-cover"
+                    priority={false}
                   />
                 )}
-                {isImage && isUploaded && (
-                  <Image
-                    src={uploadedFiles[index].url}
-                    width={64}
-                    height={64}
-                    alt={file.name}
-                    className="object-cover"
-                  />
+                {isVideo && (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                    <ImageKit
+                      src="/images/video_placeholder.png"
+                      width={64}
+                      height={64}
+                      alt="Video placeholder"
+                      className="object-contain"
+                    />
+                    {isUploaded && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
                 )}
-                {!isImage && (
-                  <ImageKit
-                    src={isImage ? "" : "/images/file-placeholder.png"}
-                    width={64}
-                    height={64}
-                    alt={file.type}
-                    className="object-contain"
-                  />
+
+                {/* 上传进度覆盖层 */}
+                {showProgress && (
+                  <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xs font-medium">{file.progress}%</span>
+                  </div>
                 )}
               </div>
 
-              <div className="flex-grow md:flex-grow-0">
-                <div className="font-medium text-sm">{file.name}</div>
-                <div className="text-xs text-gray-500">
-                  {formatFileSize(file.size)} • {file.type}
+              <div className="flex-grow">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="font-medium text-sm">{file.file.name}</div>
+                    <div className="text-xs text-gray-500">
+                      {formatFileSize(file.file.size)} • {file.type}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeFile(index)}
+                    className="text-red-500 hover:text-red-700 ml-2"
+                  >
+                    <ImageKit
+                      src="/images/delete.png"
+                      width={16}
+                      height={16}
+                      alt="删除"
+                      loading="lazy"
+                    />
+                  </button>
                 </div>
 
-                {!isUploaded && (
+                {/* 进度条 */}
+                {showProgress && (
                   <div className="w-full mt-2 bg-gray-200 rounded-full h-2">
                     <div
                       className={`bg-blue-500 h-2 rounded-full transition-all duration-300`}
-                      style={{ width: `${progress}%` }}
+                      style={{ width: `${file.progress}%` }}
                     />
                   </div>
                 )}
 
                 {/* 上传状态提示 */}
-                {isUploading && (
-                  <div className="text-xs text-blue-500 mt-1">上传中...</div>
+                {file.error && (
+                  <div className="text-xs text-red-500 mt-1 flex items-center">
+                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {file.error}
+                  </div>
                 )}
               </div>
-
-              <button
-                onClick={() => removeFile(index)}
-                className="text-red-500 hover:text-red-700 mt-2 md:mt-0"
-              >
-                <ImageKit
-                  src="/images/delete.png"
-                  width={16}
-                  height={16}
-                  alt="删除"
-                  loading="lazy"
-                />
-              </button>
             </div>
           );
         })}
@@ -242,12 +331,14 @@ const AddPost: React.FC<AddPostProps> = (props) => {
 
   useEffect(() => {
     return () => {
-      files.forEach(file => {
-        const url = URL.createObjectURL(file);
-        URL.revokeObjectURL(url);
+      uploadFiles.forEach(file => {
+        if (file.file) {
+          const url = URL.createObjectURL(file.file);
+          URL.revokeObjectURL(url);
+        }
       });
     };
-  }, [files]);
+  }, [uploadFiles]);
 
   return (
     <div className="p-4 bg-white/50 rounded-lg flex gap-6 justify-between shadow-md text-sm">
@@ -280,6 +371,8 @@ const AddPost: React.FC<AddPostProps> = (props) => {
             style={{ backgroundColor: '#f3f4f6', color: '#374151' }}
             placeholder="What's on your mind?"
             onKeyDown={handleKeyDown}
+            value={textValue}
+            onChange={(e) => setTextValue(e.target.value)}
           />
           <div className="flex gap-4">
             <ImageKit
@@ -292,8 +385,8 @@ const AddPost: React.FC<AddPostProps> = (props) => {
             />
             <button
               type='submit'
-              disabled={isLoading || chunkUploading.some(Boolean)}
-              className={`${isLoading || chunkUploading.some(Boolean) ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isLoading || uploadFiles.some(file => file.isUploading)}
+              className={`${isLoading || uploadFiles.some(file => file.isUploading) ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <ImageKit
                 src={"/images/reply.png"}

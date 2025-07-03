@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
   },
   // 开启 swc 压缩
   // swcMinify: true,
+  allowedDevOrigins: [
+    "**"
+  ],
 };
 
 export default nextConfig;

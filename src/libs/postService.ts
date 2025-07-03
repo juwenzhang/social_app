@@ -1,5 +1,4 @@
 import prisma from "@/libs/client";
-import { redirect, RedirectType } from 'next/navigation'
 
 export const createPost = async (
   userId: string,
@@ -8,7 +7,7 @@ export const createPost = async (
   fileTypes?: string[],
 ) => {
   try {
-    await prisma.post.create({
+    return await prisma.post.create({
       data: {
         userId: userId,
         fileUrls: fileUrls?.join(';'),
@@ -16,7 +15,6 @@ export const createPost = async (
         desc: desc
       }
     });
-    return redirect(`/profile/${userId}`, RedirectType.push);
   } catch (error) {
     throw error;
   }

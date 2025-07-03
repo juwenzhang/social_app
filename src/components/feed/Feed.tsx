@@ -18,7 +18,7 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const observerRef = useRef<HTMLDivElement>(null);
-  const pageRef = useRef(page); // TODO: fix: useStae ==> useRef, fix auto load more source question
+  const pageRef = useRef(page); // TODO: fix: useState ==> useRef, fix auto load more source question
 
   const fetchPosts = useCallback(async (pageNum: number = 1) => {
     if (isLoading || pageNum > totalPages) {
