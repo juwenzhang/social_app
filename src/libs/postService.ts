@@ -4,17 +4,15 @@ import { redirect, RedirectType } from 'next/navigation'
 export const createPost = async (
   userId: string,
   desc: string,
-  image?: string,
-  audio?: string,
-  video?: string,
+  fileUrls?: string[],
+  fileTypes?: string[],
 ) => {
   try {
-    const result = await prisma.post.create({
+    await prisma.post.create({
       data: {
         userId: userId,
-        audio: audio,
-        image: image,
-        video: video,
+        fileUrls: fileUrls?.join(';'),
+        fileTypes: fileTypes?.join(';'),
         desc: desc
       }
     });

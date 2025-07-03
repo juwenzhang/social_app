@@ -331,8 +331,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.9.0
-   * Query Engine version: 81e4af48011447c3cc503a190e86995b66d2a28e
+   * Prisma Client JS version: 6.11.1
+   * Query Engine version: f40f79ec31188888a2e33acda0ecc8fd10a853a9
    */
   export type PrismaVersion = {
     client: string
@@ -3967,9 +3967,8 @@ export namespace Prisma {
   export type PostMinAggregateOutputType = {
     id: number | null
     desc: string | null
-    image: string | null
-    video: string | null
-    audio: string | null
+    fileUrls: string | null
+    fileTypes: string | null
     createdAt: Date | null
     updatedAt: Date | null
     userId: string | null
@@ -3978,9 +3977,8 @@ export namespace Prisma {
   export type PostMaxAggregateOutputType = {
     id: number | null
     desc: string | null
-    image: string | null
-    video: string | null
-    audio: string | null
+    fileUrls: string | null
+    fileTypes: string | null
     createdAt: Date | null
     updatedAt: Date | null
     userId: string | null
@@ -3989,9 +3987,8 @@ export namespace Prisma {
   export type PostCountAggregateOutputType = {
     id: number
     desc: number
-    image: number
-    video: number
-    audio: number
+    fileUrls: number
+    fileTypes: number
     createdAt: number
     updatedAt: number
     userId: number
@@ -4010,9 +4007,8 @@ export namespace Prisma {
   export type PostMinAggregateInputType = {
     id?: true
     desc?: true
-    image?: true
-    video?: true
-    audio?: true
+    fileUrls?: true
+    fileTypes?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -4021,9 +4017,8 @@ export namespace Prisma {
   export type PostMaxAggregateInputType = {
     id?: true
     desc?: true
-    image?: true
-    video?: true
-    audio?: true
+    fileUrls?: true
+    fileTypes?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -4032,9 +4027,8 @@ export namespace Prisma {
   export type PostCountAggregateInputType = {
     id?: true
     desc?: true
-    image?: true
-    video?: true
-    audio?: true
+    fileUrls?: true
+    fileTypes?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -4130,9 +4124,8 @@ export namespace Prisma {
   export type PostGroupByOutputType = {
     id: number
     desc: string | null
-    image: string | null
-    video: string | null
-    audio: string | null
+    fileUrls: string | null
+    fileTypes: string | null
     createdAt: Date
     updatedAt: Date
     userId: string
@@ -4160,9 +4153,8 @@ export namespace Prisma {
   export type PostSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     desc?: boolean
-    image?: boolean
-    video?: boolean
-    audio?: boolean
+    fileUrls?: boolean
+    fileTypes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
@@ -4177,15 +4169,14 @@ export namespace Prisma {
   export type PostSelectScalar = {
     id?: boolean
     desc?: boolean
-    image?: boolean
-    video?: boolean
-    audio?: boolean
+    fileUrls?: boolean
+    fileTypes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
   }
 
-  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "desc" | "image" | "video" | "audio" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["post"]>
+  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "desc" | "fileUrls" | "fileTypes" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["post"]>
   export type PostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     likes?: boolean | Post$likesArgs<ExtArgs>
@@ -4203,9 +4194,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       desc: string | null
-      image: string | null
-      video: string | null
-      audio: string | null
+      fileUrls: string | null
+      fileTypes: string | null
       createdAt: Date
       updatedAt: Date
       userId: string
@@ -4583,9 +4573,8 @@ export namespace Prisma {
   interface PostFieldRefs {
     readonly id: FieldRef<"Post", 'Int'>
     readonly desc: FieldRef<"Post", 'String'>
-    readonly image: FieldRef<"Post", 'String'>
-    readonly video: FieldRef<"Post", 'String'>
-    readonly audio: FieldRef<"Post", 'String'>
+    readonly fileUrls: FieldRef<"Post", 'String'>
+    readonly fileTypes: FieldRef<"Post", 'String'>
     readonly createdAt: FieldRef<"Post", 'DateTime'>
     readonly updatedAt: FieldRef<"Post", 'DateTime'>
     readonly userId: FieldRef<"Post", 'String'>
@@ -10896,9 +10885,8 @@ export namespace Prisma {
   export const PostScalarFieldEnum: {
     id: 'id',
     desc: 'desc',
-    image: 'image',
-    video: 'video',
-    audio: 'audio',
+    fileUrls: 'fileUrls',
+    fileTypes: 'fileTypes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     userId: 'userId'
@@ -11015,9 +11003,8 @@ export namespace Prisma {
 
   export const PostOrderByRelevanceFieldEnum: {
     desc: 'desc',
-    image: 'image',
-    video: 'video',
-    audio: 'audio',
+    fileUrls: 'fileUrls',
+    fileTypes: 'fileTypes',
     userId: 'userId'
   };
 
@@ -11307,9 +11294,8 @@ export namespace Prisma {
     NOT?: PostWhereInput | PostWhereInput[]
     id?: IntFilter<"Post"> | number
     desc?: StringNullableFilter<"Post"> | string | null
-    image?: StringNullableFilter<"Post"> | string | null
-    video?: StringNullableFilter<"Post"> | string | null
-    audio?: StringNullableFilter<"Post"> | string | null
+    fileUrls?: StringNullableFilter<"Post"> | string | null
+    fileTypes?: StringNullableFilter<"Post"> | string | null
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
     userId?: StringFilter<"Post"> | string
@@ -11321,9 +11307,8 @@ export namespace Prisma {
   export type PostOrderByWithRelationInput = {
     id?: SortOrder
     desc?: SortOrderInput | SortOrder
-    image?: SortOrderInput | SortOrder
-    video?: SortOrderInput | SortOrder
-    audio?: SortOrderInput | SortOrder
+    fileUrls?: SortOrderInput | SortOrder
+    fileTypes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -11339,9 +11324,8 @@ export namespace Prisma {
     OR?: PostWhereInput[]
     NOT?: PostWhereInput | PostWhereInput[]
     desc?: StringNullableFilter<"Post"> | string | null
-    image?: StringNullableFilter<"Post"> | string | null
-    video?: StringNullableFilter<"Post"> | string | null
-    audio?: StringNullableFilter<"Post"> | string | null
+    fileUrls?: StringNullableFilter<"Post"> | string | null
+    fileTypes?: StringNullableFilter<"Post"> | string | null
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
     userId?: StringFilter<"Post"> | string
@@ -11353,9 +11337,8 @@ export namespace Prisma {
   export type PostOrderByWithAggregationInput = {
     id?: SortOrder
     desc?: SortOrderInput | SortOrder
-    image?: SortOrderInput | SortOrder
-    video?: SortOrderInput | SortOrder
-    audio?: SortOrderInput | SortOrder
+    fileUrls?: SortOrderInput | SortOrder
+    fileTypes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -11372,9 +11355,8 @@ export namespace Prisma {
     NOT?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Post"> | number
     desc?: StringNullableWithAggregatesFilter<"Post"> | string | null
-    image?: StringNullableWithAggregatesFilter<"Post"> | string | null
-    video?: StringNullableWithAggregatesFilter<"Post"> | string | null
-    audio?: StringNullableWithAggregatesFilter<"Post"> | string | null
+    fileUrls?: StringNullableWithAggregatesFilter<"Post"> | string | null
+    fileTypes?: StringNullableWithAggregatesFilter<"Post"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
     userId?: StringWithAggregatesFilter<"Post"> | string
@@ -11957,9 +11939,8 @@ export namespace Prisma {
 
   export type PostCreateInput = {
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutPostsInput
@@ -11970,9 +11951,8 @@ export namespace Prisma {
   export type PostUncheckedCreateInput = {
     id?: number
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -11982,9 +11962,8 @@ export namespace Prisma {
 
   export type PostUpdateInput = {
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPostsNestedInput
@@ -11995,9 +11974,8 @@ export namespace Prisma {
   export type PostUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -12008,9 +11986,8 @@ export namespace Prisma {
   export type PostCreateManyInput = {
     id?: number
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -12018,9 +11995,8 @@ export namespace Prisma {
 
   export type PostUpdateManyMutationInput = {
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12028,9 +12004,8 @@ export namespace Prisma {
   export type PostUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -12645,9 +12620,8 @@ export namespace Prisma {
   export type PostCountOrderByAggregateInput = {
     id?: SortOrder
     desc?: SortOrder
-    image?: SortOrder
-    video?: SortOrder
-    audio?: SortOrder
+    fileUrls?: SortOrder
+    fileTypes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -12660,9 +12634,8 @@ export namespace Prisma {
   export type PostMaxOrderByAggregateInput = {
     id?: SortOrder
     desc?: SortOrder
-    image?: SortOrder
-    video?: SortOrder
-    audio?: SortOrder
+    fileUrls?: SortOrder
+    fileTypes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -12671,9 +12644,8 @@ export namespace Prisma {
   export type PostMinOrderByAggregateInput = {
     id?: SortOrder
     desc?: SortOrder
-    image?: SortOrder
-    video?: SortOrder
-    audio?: SortOrder
+    fileUrls?: SortOrder
+    fileTypes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -13906,9 +13878,8 @@ export namespace Prisma {
 
   export type PostCreateWithoutUserInput = {
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     likes?: LikeCreateNestedManyWithoutPostInput
@@ -13918,9 +13889,8 @@ export namespace Prisma {
   export type PostUncheckedCreateWithoutUserInput = {
     id?: number
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     likes?: LikeUncheckedCreateNestedManyWithoutPostInput
@@ -14156,9 +14126,8 @@ export namespace Prisma {
     NOT?: PostScalarWhereInput | PostScalarWhereInput[]
     id?: IntFilter<"Post"> | number
     desc?: StringNullableFilter<"Post"> | string | null
-    image?: StringNullableFilter<"Post"> | string | null
-    video?: StringNullableFilter<"Post"> | string | null
-    audio?: StringNullableFilter<"Post"> | string | null
+    fileUrls?: StringNullableFilter<"Post"> | string | null
+    fileTypes?: StringNullableFilter<"Post"> | string | null
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
     userId?: StringFilter<"Post"> | string
@@ -14638,9 +14607,8 @@ export namespace Prisma {
 
   export type PostCreateWithoutCommentsInput = {
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutPostsInput
@@ -14650,9 +14618,8 @@ export namespace Prisma {
   export type PostUncheckedCreateWithoutCommentsInput = {
     id?: number
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -14765,9 +14732,8 @@ export namespace Prisma {
 
   export type PostUpdateWithoutCommentsInput = {
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPostsNestedInput
@@ -14777,9 +14743,8 @@ export namespace Prisma {
   export type PostUncheckedUpdateWithoutCommentsInput = {
     id?: IntFieldUpdateOperationsInput | number
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -14863,9 +14828,8 @@ export namespace Prisma {
 
   export type PostCreateWithoutLikesInput = {
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutPostsInput
@@ -14875,9 +14839,8 @@ export namespace Prisma {
   export type PostUncheckedCreateWithoutLikesInput = {
     id?: number
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -14989,9 +14952,8 @@ export namespace Prisma {
 
   export type PostUpdateWithoutLikesInput = {
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPostsNestedInput
@@ -15001,9 +14963,8 @@ export namespace Prisma {
   export type PostUncheckedUpdateWithoutLikesInput = {
     id?: IntFieldUpdateOperationsInput | number
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -15909,9 +15870,8 @@ export namespace Prisma {
   export type PostCreateManyUserInput = {
     id?: number
     desc?: string | null
-    image?: string | null
-    video?: string | null
-    audio?: string | null
+    fileUrls?: string | null
+    fileTypes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15975,9 +15935,8 @@ export namespace Prisma {
 
   export type PostUpdateWithoutUserInput = {
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     likes?: LikeUpdateManyWithoutPostNestedInput
@@ -15987,9 +15946,8 @@ export namespace Prisma {
   export type PostUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     likes?: LikeUncheckedUpdateManyWithoutPostNestedInput
@@ -15999,9 +15957,8 @@ export namespace Prisma {
   export type PostUncheckedUpdateManyWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     desc?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    video?: NullableStringFieldUpdateOperationsInput | string | null
-    audio?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrls?: NullableStringFieldUpdateOperationsInput | string | null
+    fileTypes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

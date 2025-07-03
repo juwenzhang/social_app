@@ -50,7 +50,7 @@ export async function POST(req: Request) {
   }
 
   // Do something with the webhook payload
-  const { id } = evt.data;
+  const { id } = evt.data as { id: string };
   const eventType = evt.type;
 
   // console.log(`Webhook with and ID of ${id} and type of ${eventType}`);

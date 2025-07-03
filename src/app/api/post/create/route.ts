@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { createPost, getAllPosts } from '@/libs/postService';
 import { uploadToCloudinary } from '@/utils/uploadToCloudinary';
@@ -9,47 +9,59 @@ export async function POST(req: Request) {
   if (!userId) {
     return new NextResponse(JSON.stringify({ error: '未认证用户' }), { status: 401 });
   }
-  const formData = await req.formData();
-  const desc = formData.get('desc') as string;
-  const image = formData.get('image') as File;
-  const audio = formData.get('audio') as File;
-  const video = formData.get('video') as File;
 
-  if (!desc) {
-    return new NextResponse(JSON.stringify({ error: '描述不能为空' }), { status: 400 });
-  }
-  let imageUrl;
-  if (image) {
-    try {
-      imageUrl = await uploadToCloudinary(image, 'social_app');
-    } catch (error) {
-      return new NextResponse(JSON.stringify({ error: '图片上传失败' }), { status: 500 });
+  try {
+    const formData = await req.formData();
+    const desc = formData.get('desc') as string;
+    const fileCount = parseInt(formData.get('fileCount') as string || '0');
+
+    if (!desc.trim() && fileCount === 0) {
+      return new NextResponse(JSON.stringify({ error: '描述和文件至少填一项' }), { status: 400 });
     }
-  }
-  let audioUrl;
-  if (audio) {
-    try {
-      audioUrl = await uploadToCloudinary(audio, 'social_app');
-    } catch (error) {
-      return new NextResponse(JSON.stringify({ error: '音频上传失败' }), { status: 500 });
+
+    const files: File[] = [];
+    for (let i = 0; i < fileCount; i++) {
+      const file = formData.get(`file_${i}`) as File;
+      if (file) files.push(file);
     }
-  }
-  let videoUrl;
-  if (video) {
-    try {
-      videoUrl = await uploadToCloudinary(video, 'social_app');
-    } catch (error) {
-      return new NextResponse(JSON.stringify({ error: '视频上传失败' }), { status: 500 });
+
+    const invalidFiles = files.filter(file => {
+      const sizeMB = file.size / (1024 * 1024);
+      const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
+      return (isImage && sizeMB > 5) || (isVideo && sizeMB > 50);
+    });
+
+    if (invalidFiles.length > 0) {
+      return new NextResponse(JSON.stringify({
+        error: `文件大小超出限制：${invalidFiles[0].name}`
+      }), { status: 400 });
     }
+
+    const uploadPromises = files.map(file =>
+      uploadToCloudinary(file, 'social_app')
+    );
+
+    const uploadResults = await Promise.all(uploadPromises);
+    const fileUrls = uploadResults.map(result => (result as any)?.secure_url);
+    const fileTypes = files.map(file => file.type);
+
+    const post = await createPost(
+      userId,
+      stringToBase64(desc),
+      fileUrls,
+      fileTypes
+    );
+
+    return new NextResponse(JSON.stringify(post), { status: 201 });
+  } catch (error: any) {
+    console.error('多文件上传处理失败:', error);
+    return new NextResponse(JSON.stringify({
+      error: error.message || '服务器错误，请重试'
+    }), {
+      status: error.response?.status || 500
+    });
   }
-  const post = await createPost(
-    userId,
-    stringToBase64(desc),
-    (imageUrl as any)?.secure_url,
-    (audioUrl as any)?.secure_url,
-    (videoUrl as any)?.secure_url,
-  );
-  return new NextResponse(JSON.stringify(post), { status: 201 });
 }
 
 export async function GET() {
@@ -57,13 +69,15 @@ export async function GET() {
     const posts = await getAllPosts();
     const postsWithDesc = posts.map(post => ({
       ...post,
-      desc: typeof post.desc === 'string' ? 
-        post.desc 
+      desc: typeof post.desc === 'string' ?
+        post.desc
         : base64ToString((post as any).desc),
     }));
     return new NextResponse(JSON.stringify(postsWithDesc), { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('获取帖子失败:', error);
-    return new NextResponse(JSON.stringify({ error: '获取帖子失败' }), { status: 500 });
+    return new NextResponse(JSON.stringify({
+      error: error.message || '获取帖子失败'
+    }), { status: 500 });
   }
 }

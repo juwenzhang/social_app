@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import Navbar from "@/components/Nav/Navbar";
 // import Background from "@/components/base/Background";
 // import StarBackground from "@/components/base/StarBackground";
+import Navbar from "@/components/Nav/Navbar";
 import { ThemeProvider } from "@/contexts/provider/ThemeProvider";
 import ToastContainer from '@/contexts/provider/ToastSsrProvider';
 import { auth } from "@clerk/nextjs/server";
