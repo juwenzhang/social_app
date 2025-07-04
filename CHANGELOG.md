@@ -12,6 +12,7 @@
 * fix changelog bug ([f546bc7](https://github.com/juwenzhang/social_app/commit/f546bc7d7698d5f2cd3241602d8e202b608c5e1a))
 * fix changelog bug, find some question ([97f6bce](https://github.com/juwenzhang/social_app/commit/97f6bcefa86aa24e75dba1e734504be11efd6508))
 * fix eslint lint ([88c17d8](https://github.com/juwenzhang/social_app/commit/88c17d89cefe8d17388d42fd7aea8395c5ffcb86))
+* fix eslint lint * 2 ([0b60105](https://github.com/juwenzhang/social_app/commit/0b60105ecb7d1e75128eadf56c7735f5357d9564))
 * rename appleboy/ssh-action version ([c4a0258](https://github.com/juwenzhang/social_app/commit/c4a0258384f40c443976a007bc7b618912e5e778))
 * update exec sorts ([61112da](https://github.com/juwenzhang/social_app/commit/61112da7e58579c4acd95cff4ff70653a628a7e8))
 * update flows name ([6f6dd78](https://github.com/juwenzhang/social_app/commit/6f6dd783cc061f34ea83eadcf05f2661290f301f))
