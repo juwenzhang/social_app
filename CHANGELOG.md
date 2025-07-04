@@ -1,8 +1,9 @@
-# 0.1.0 (2025-07-03)
+# 0.1.0 (2025-07-04)
 
 
 ### Bug Fixes
 
+* 修改bug * 1 ([9d434a2](https://github.com/juwenzhang/social_app/commit/9d434a2888b7b1499bcad09530daebbb632e6aa8))
 * changelog bug ([bcc3938](https://github.com/juwenzhang/social_app/commit/bcc3938901e5ee32f09b1cb50a7cc543c96181fd))
 * changelog bug * 2 ([47f952b](https://github.com/juwenzhang/social_app/commit/47f952bf7c45bbcd1591ca097d6a973a14c52948))
 * changelog bug * 3 ([855ba98](https://github.com/juwenzhang/social_app/commit/855ba9894b56a35ef7d17dc8fae5ff129555c4ed))
