@@ -36,7 +36,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Copy files to server
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -67,7 +67,7 @@ jobs:
             echo "CLERK_WEBHOOK_SIGNING_SECRET=${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET }}" >> .env
 
       - name: Install dependencies on the server
-        uses: appleboy/ssh-action@v0.1.16
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -77,7 +77,7 @@ jobs:
             pnpm install
 
       - name: Start the application on the server
-        uses: appleboy/ssh-action@v0.1.16
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
