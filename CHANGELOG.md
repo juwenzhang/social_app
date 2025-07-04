@@ -12,6 +12,7 @@
 * fix changelog bug ([f546bc7](https://github.com/juwenzhang/social_app/commit/f546bc7d7698d5f2cd3241602d8e202b608c5e1a))
 * fix changelog bug, find some question ([97f6bce](https://github.com/juwenzhang/social_app/commit/97f6bcefa86aa24e75dba1e734504be11efd6508))
 * rename appleboy/ssh-action version ([c4a0258](https://github.com/juwenzhang/social_app/commit/c4a0258384f40c443976a007bc7b618912e5e778))
+* update flows name ([6f6dd78](https://github.com/juwenzhang/social_app/commit/6f6dd783cc061f34ea83eadcf05f2661290f301f))
 * update post.desc,type and realise post render when much data ([59f55e4](https://github.com/juwenzhang/social_app/commit/59f55e40ea72c0c60fb304a2dc82dbec646e712b))
 * update some type error and add some api ([8a14a50](https://github.com/juwenzhang/social_app/commit/8a14a50731663b46bbfe4cdefe2a842b0af5fc47))
 
