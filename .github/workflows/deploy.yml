@@ -45,7 +45,7 @@ jobs:
           target: '/home/sociap_app'
 
       - name: Set up environment variables on the server
-        uses: appleboy/ssh-action@v0.1.16
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
