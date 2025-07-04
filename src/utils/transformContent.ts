@@ -22,7 +22,7 @@ export function base64ToString(base64: string): string {
   return Buffer.from(base64, 'base64').toString('utf8');
 }
 
-export function jsonToBase64<T>(jsonData: Record<string, any>): string {
+export function jsonToBase64(jsonData: Record<string, any>): string {
   const jsonString = JSON.stringify(jsonData);
   return Buffer.from(jsonString, 'utf8').toString('base64');
 }
@@ -31,3 +31,5 @@ export function base64ToJson<T>(base64: string): T {
   const jsonString = Buffer.from(base64, 'base64').toString('utf8');
   return JSON.parse(jsonString) as T;
 }
+
+

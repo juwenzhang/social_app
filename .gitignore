@@ -46,3 +46,5 @@ Dockerfile
 docker-compose.yml
 
 .idea
+
+src/generated/prisma
