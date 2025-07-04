@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: '.'
-          target: '/home/sociap_app'
+          target: '/home/sociap_app' 
 
       - name: Set up environment variables on the server
         uses: appleboy/ssh-action@v1
