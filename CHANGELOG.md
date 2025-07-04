@@ -7,6 +7,7 @@
 * changelog bug ([bcc3938](https://github.com/juwenzhang/social_app/commit/bcc3938901e5ee32f09b1cb50a7cc543c96181fd))
 * changelog bug * 2 ([47f952b](https://github.com/juwenzhang/social_app/commit/47f952bf7c45bbcd1591ca097d6a973a14c52948))
 * changelog bug * 3 ([855ba98](https://github.com/juwenzhang/social_app/commit/855ba9894b56a35ef7d17dc8fae5ff129555c4ed))
+* **deploy.yml:** rename appleboy/ssh-action version ([e713b7c](https://github.com/juwenzhang/social_app/commit/e713b7c4660e775b65583df6a85afc6635796e9c))
 * fix changelog bug ([ee1573c](https://github.com/juwenzhang/social_app/commit/ee1573cc4ebe0a88932aa6c1054cb91f533bc683))
 * fix changelog bug ([f546bc7](https://github.com/juwenzhang/social_app/commit/f546bc7d7698d5f2cd3241602d8e202b608c5e1a))
 * fix changelog bug, find some question ([97f6bce](https://github.com/juwenzhang/social_app/commit/97f6bcefa86aa24e75dba1e734504be11efd6508))
