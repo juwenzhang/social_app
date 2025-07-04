@@ -26,6 +26,7 @@
 * add new spi interface ([c8ede65](https://github.com/juwenzhang/social_app/commit/c8ede65f0d36e061904094bff4b77d3c155e2631))
 * add webworker to improve source load ([438062f](https://github.com/juwenzhang/social_app/commit/438062ff6df943f6dbb404a377f1f72f3fbc0db8))
 * complete home skeleon and add background ([f2f66a5](https://github.com/juwenzhang/social_app/commit/f2f66a548303c2755e3111c3ee16015359c3a108))
+* config yml ([f6c77c9](https://github.com/juwenzhang/social_app/commit/f6c77c9a19309a75d17dcb4136e719a3c4d69ba1))
 * refactor: rebuild dict and add some api ([b79044c](https://github.com/juwenzhang/social_app/commit/b79044cd061dd8ea308379ed0714111b150cfa98))
 * **updateUser:** add imagekit into project and update updateuser component ([d053029](https://github.com/juwenzhang/social_app/commit/d053029d19e9d624bf0941f00fdc7b6a3a061224))
 
