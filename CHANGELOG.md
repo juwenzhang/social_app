@@ -22,6 +22,7 @@
 * add api code ([78d8c0a](https://github.com/juwenzhang/social_app/commit/78d8c0a1e7b7ccdb470a9263c3488fffeb422f00))
 * add changelog and add some new api-back ([7db9368](https://github.com/juwenzhang/social_app/commit/7db9368982e2590c41467886429778824c4c0b09))
 * add database design and write some bug ([bb7cf35](https://github.com/juwenzhang/social_app/commit/bb7cf35d79378b9e8b0fd08d2c3f27b0f08dca0a))
+* add flows yaml ([f06eabc](https://github.com/juwenzhang/social_app/commit/f06eabc25321ad30d2636f8759efb6a61c32591a))
 * add image process utils and complete HomePage ([586042a](https://github.com/juwenzhang/social_app/commit/586042a08fc0faa5e727238c3e0c578a008a2af1))
 * add more core api and func ([177e737](https://github.com/juwenzhang/social_app/commit/177e737bd8d77069ecf4d6d99e1e4c08e9dd8273))
 * add new func ([ec653bb](https://github.com/juwenzhang/social_app/commit/ec653bbf63b7acaaed255bc259e5e1d501b8cb0f))
