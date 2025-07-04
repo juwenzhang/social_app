@@ -15,6 +15,7 @@
 * update flows name ([6f6dd78](https://github.com/juwenzhang/social_app/commit/6f6dd783cc061f34ea83eadcf05f2661290f301f))
 * update post.desc,type and realise post render when much data ([59f55e4](https://github.com/juwenzhang/social_app/commit/59f55e40ea72c0c60fb304a2dc82dbec646e712b))
 * update some type error and add some api ([8a14a50](https://github.com/juwenzhang/social_app/commit/8a14a50731663b46bbfe4cdefe2a842b0af5fc47))
+* update version ([448b83f](https://github.com/juwenzhang/social_app/commit/448b83f92bce1d1426584ad5447d40a48e46d9a9))
 
 
 ### Features
