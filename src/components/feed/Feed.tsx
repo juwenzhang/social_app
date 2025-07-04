@@ -57,7 +57,7 @@ const Feed: React.FC<FeedProps> = (props: FeedProps) => {
 
   useEffect(() => {
     fetchPosts(1);
-  }, [userId, perPage]); 
+  }, [user, perPage]); 
 
   useEffect(() => {
     if (!observerRef.current) return;

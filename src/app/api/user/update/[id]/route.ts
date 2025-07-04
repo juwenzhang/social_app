@@ -7,7 +7,6 @@ export async function POST(req: Request) {
   const formData = await req.formData();
   const updateData: Record<string, any> = {};
 
-  // 处理普通文本字段
   [
     'description', 
     'school', 

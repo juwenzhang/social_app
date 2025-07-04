@@ -3,10 +3,10 @@ import prisma from '@/libs/client';
 import { auth } from '@clerk/nextjs/server';
 import {base64ToString, stringToBase64} from "@/utils/transformContent";
 
-export async function GET(request: NextRequest, { params }: { params: { postId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
   try {
     const { userId } = await auth();
-    const postId = parseInt(params.postId);
+    const postId = parseInt((await params).postId);
 
     const comments = await prisma.comment.findMany({
       where: { postId },
@@ -38,14 +38,14 @@ export async function GET(request: NextRequest, { params }: { params: { postId: 
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { postId: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
     }
 
-    const postId = parseInt(params.postId);
+    const postId = parseInt((await params).postId);
     const { content } = await request.json();
 
     if (!content) {
@@ -64,7 +64,6 @@ export async function POST(request: NextRequest, { params }: { params: { postId:
       },
     });
 
-    // 更新帖子的评论计数
     await prisma.post.update({
       where: { id: postId },
       data: {

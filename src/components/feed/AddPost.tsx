@@ -33,7 +33,6 @@ const AddPost: React.FC<AddPostProps> = (props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Ctrl+Enter 提交评论
     if (e.key === 'Enter' && e.ctrlKey) {
       e.preventDefault();
       const form = e.currentTarget.closest('form');
@@ -41,18 +40,15 @@ const AddPost: React.FC<AddPostProps> = (props) => {
       return;
     }
 
-    // 单独Enter键插入换行
     if (e.key === 'Enter') {
       e.preventDefault();
       const start = textAreaRef.current?.selectionStart || 0;
       const end = textAreaRef.current?.selectionEnd || 0;
 
-      // 插入换行符
       setTextValue(prev =>
         prev.substring(0, start) + '\n' + prev.substring(end)
       );
 
-      // 移动光标到换行后
       setTimeout(() => {
         if (textAreaRef.current) {
           textAreaRef.current.selectionStart = start + 1;
@@ -62,18 +58,15 @@ const AddPost: React.FC<AddPostProps> = (props) => {
       return;
     }
 
-    // 支持Tab键缩进
     if (e.key === 'Tab') {
       e.preventDefault();
       const start = textAreaRef.current?.selectionStart || 0;
       const end = textAreaRef.current?.selectionEnd || 0;
 
-      // 插入Tab字符
       setTextValue(prev =>
         prev.substring(0, start) + '  ' + prev.substring(end)
       );
 
-      // 移动光标到Tab后
       setTimeout(() => {
         if (textAreaRef.current) {
           textAreaRef.current.selectionStart = start + 2;
@@ -358,9 +351,7 @@ const AddPost: React.FC<AddPostProps> = (props) => {
           <textarea
             ref={textAreaRef}
             name="desc"
-            cols={30}
             rows={1}
-            maxLength={1000}
             spellCheck={false}
             autoComplete="off"
             autoCorrect="off"

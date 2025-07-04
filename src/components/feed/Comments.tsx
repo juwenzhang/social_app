@@ -29,11 +29,10 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 加载评论
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await fetch(`/api/comments/${postId}`);
+        const response = await fetch(`/api/comment/${postId}`);
         if (!response.ok) {
           throw new Error('获取评论失败');
         }
@@ -49,7 +48,6 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
     fetchComments();
   }, [postId]);
 
-  // 提交评论
   const handleSubmitComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -58,7 +56,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
     }
 
     try {
-      const response = await fetch(`/api/comments/${postId}`, {
+      const response = await fetch(`/api/comment/${postId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +97,6 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
         throw new Error('点赞失败');
       }
 
-      // 更新评论点赞状态
       setComments(comments.map(comment => {
         if (comment.id === commentId) {
           return {
@@ -187,17 +184,15 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
                   {comment.user.username}
                 </span>
 
-                {/* 评论内容 */}
                 <p className='break-words text-gray-600 text-sm'>
                   {comment.content}
                 </p>
 
-                {/* 评论交互 */}
                 <div className='flex gap-4 items-center text-xs text-gray-500'>
                   <span>{new Date(comment.createdAt).toLocaleString()}</span>
                   <button
                     onClick={() => handleLikeComment(comment.id)}
-                    className={`flex items-center ${comment.isLiked ? 'text-red-500' : 'text-gray-500'}`}
+                    className={`flex items-center ${comment.isLiked ? 'text-red-500' : 'text-gray-500'} cursor-pointer`}
                   >
                     <svg className="w-3 h-3 mr-1" fill={comment.isLiked ? "red" : "none"} stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>

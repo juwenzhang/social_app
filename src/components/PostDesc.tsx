@@ -37,6 +37,9 @@ interface PostProps {
 
 function SyntaxHighlightedCode(props: any) {
   const ref = React.useRef<HTMLElement | null>(null);
+  const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [codeContent, setCodeContent] = React.useState(props.children || '');
 
   React.useEffect(() => {
     if (ref.current && props.className?.includes('lang-')) {
@@ -45,7 +48,83 @@ function SyntaxHighlightedCode(props: any) {
     }
   }, [props.className, props.children]);
 
-  return <code {...props} ref={ref} />;
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    
+    const clipboardData = e.clipboardData || (window as any).clipboardData;
+    const pastedText = clipboardData.getData('text');
+    
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    
+    setCodeContent(prev => 
+      prev.substring(0, start) + pastedText + prev.substring(end)
+    );
+    
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.selectionStart = start + pastedText.length;
+        textareaRef.current.selectionEnd = start + pastedText.length;
+      }
+    }, 0);
+  };
+
+  const startEditing = () => {
+    setIsEditing(true);
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, 0);
+  };
+
+  const saveEditing = () => {
+    setIsEditing(false);
+  };
+
+  const cancelEditing = () => {
+    setIsEditing(false);
+    setCodeContent(props.children || ''); // 恢复原始内容
+  };
+
+  if (isEditing) {
+    return (
+      <div className="relative">
+        <textarea
+          ref={textareaRef}
+          value={codeContent}
+          onChange={(e) => setCodeContent(e.target.value)}
+          onPaste={handlePaste}
+          className="w-full bg-gray-800 text-white p-3 rounded-md overflow-x-auto font-mono text-sm"
+          spellCheck={false}
+          rows={10}
+        />
+        <div className="absolute top-2 right-2 flex gap-2">
+          <button onClick={saveEditing} className="bg-green-500 text-white px-2 py-1 rounded text-xs">
+            保存
+          </button>
+          <button onClick={cancelEditing} className="bg-gray-600 text-white px-2 py-1 rounded text-xs">
+            取消
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <code {...props} ref={ref} />
+      <button
+        onClick={startEditing}
+        className="absolute top-2 right-2 bg-gray-700 text-white px-2 py-1 rounded text-xs opacity-0 hover:opacity-100 transition-opacity"
+      >
+        编辑
+      </button>
+    </div>
+  );
 }
 
 const PostDesc: React.FC<PostProps> = ({
