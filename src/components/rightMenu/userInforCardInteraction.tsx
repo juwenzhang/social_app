@@ -11,7 +11,7 @@ interface UserInfoCardInteractionProps {
 
 const UserInfoCardInteraction = (props: UserInfoCardInteractionProps) => {
   const { userId, currentUserId, isUserBlocked, isFollowing, isFollowingSent } = props;
-  const [userState, useUserState] = useState({
+  const [userState, SetUserState] = useState({
     isFollowing: isFollowing,
     isFollowingSent: isFollowingSent,
     isUserBlocked: isUserBlocked,
@@ -30,7 +30,7 @@ const UserInfoCardInteraction = (props: UserInfoCardInteractionProps) => {
 
       const data = await response.json();
       if (data.success) {
-        useUserState(prev => {
+        SetUserState(prev => {
           return {
             ...prev,
             isFollowing: prev.isFollowing && false,
@@ -56,7 +56,7 @@ const UserInfoCardInteraction = (props: UserInfoCardInteractionProps) => {
 
       const data = await response.json();
       if (data.success) {
-        useUserState(prev => {
+        SetUserState(prev => {
           return {
            ...prev,
             isUserBlocked: prev.isUserBlocked,

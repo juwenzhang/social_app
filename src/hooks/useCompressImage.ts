@@ -74,7 +74,7 @@ const useCompressImage = (
         URL.revokeObjectURL(result);
       }
     };
-  }, [fullImageUrl]);
+  }, [fullImageUrl, result, retryCount]);
 
   return { result, isLoading, error };
 };

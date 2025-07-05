@@ -5,6 +5,7 @@ export const useInViewport = () => {
   const [isInViewport, setIsInViewport] = useState(false);
 
   useEffect(() => {
+    const currentRef = ref.current;
     const observer = new IntersectionObserver(([entry]) => {
       setIsInViewport(entry.isIntersecting);
     });
@@ -14,11 +15,11 @@ export const useInViewport = () => {
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
-  }, []);
+  }, [ref]);
 
   return { ref, isInViewport };
 };

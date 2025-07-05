@@ -132,6 +132,7 @@ const Background: React.FC = () => {
 
   // 组件挂载初始化
   useLayoutEffect(() => {
+    const currentRef = containerRef.current;
     isMounted.current = true;
     starArray.current = generateStars(200);
     setIsAnimated(true); 
@@ -143,7 +144,7 @@ const Background: React.FC = () => {
     return () => {
       isMounted.current = false;
       window.removeEventListener('resize', handleResize);
-      containerRef.current?.removeEventListener('mousemove', handleMouseMove);
+      currentRef?.removeEventListener('mousemove', handleMouseMove);
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
   }, [generateStars, animate, handleResize, handleMouseMove]);
@@ -161,7 +162,7 @@ const Background: React.FC = () => {
     if (isMounted.current && starArray.current.length > 0) {
       setStars(starArray.current);
     }
-  }, [isMounted.current, starArray.current]);
+  }, []);
 
   return (
     <div 

@@ -77,7 +77,7 @@ const useWatermarkImage = (
         URL.revokeObjectURL(watermarkedSrc);
       }
     };
-  }, [pathname, fullImageUrl, watermarkText]);
+  }, [pathname, fullImageUrl, watermarkText, retryCount, watermarkedSrc]);
 
   return { watermarkedSrc, isLoading, error };
 };

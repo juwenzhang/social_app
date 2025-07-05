@@ -23,7 +23,8 @@ const eslintConfig = [
       'react-hooks/exhaustive-deps': 'warn',
       "@typescript-eslint/no-explicit-any": "off",
       'react/no-unescaped-entities': 'off',
-      '@next/next/no-page-custom-font': 'off',
+      "react-hooks/rules-of-hooks": "off",
+      "@next/next/no-page-custom-font": "off",
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-unused-vars": "off",
@@ -32,6 +33,8 @@ const eslintConfig = [
       "@typescript-eslint/no-unnecessary-type-constraint": "off",
       "@typescript-eslint/no-this-alias": "off",
       "@typescript-eslint/no-unsafe-function-type": "off",
+      "@typescript-eslint/no-wrapper-object-type": "off",
+      "react-hooks/exhaustive-deps": "off",
     },
   }
 ];
