@@ -1,4 +1,4 @@
-# 0.1.0 (2025-07-04)
+# 0.1.0 (2025-07-05)
 
 
 ### Bug Fixes
@@ -14,6 +14,7 @@
 * fix eslint lint ([88c17d8](https://github.com/juwenzhang/social_app/commit/88c17d89cefe8d17388d42fd7aea8395c5ffcb86))
 * fix eslint lint * 2 ([0b60105](https://github.com/juwenzhang/social_app/commit/0b60105ecb7d1e75128eadf56c7735f5357d9564))
 * rename appleboy/ssh-action version ([c4a0258](https://github.com/juwenzhang/social_app/commit/c4a0258384f40c443976a007bc7b618912e5e778))
+* update eslint config ([e7b7970](https://github.com/juwenzhang/social_app/commit/e7b7970fab26cf53187bbaec22d18704f81f2f04))
 * update exec sorts ([61112da](https://github.com/juwenzhang/social_app/commit/61112da7e58579c4acd95cff4ff70653a628a7e8))
 * update flows name ([6f6dd78](https://github.com/juwenzhang/social_app/commit/6f6dd783cc061f34ea83eadcf05f2661290f301f))
 * update post.desc,type and realise post render when much data ([59f55e4](https://github.com/juwenzhang/social_app/commit/59f55e40ea72c0c60fb304a2dc82dbec646e712b))
